@@ -1,4 +1,4 @@
-FILES=*.java
+FILES=ParkingEscape/*.java
 
 all:
 	rm -f *.class

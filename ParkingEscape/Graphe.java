@@ -1,3 +1,5 @@
+package ParkingEscape;
+
 public class Graphe
 {
     public Graphe()
