@@ -29,16 +29,17 @@ public class Situation {
 
 	@Override
 	public boolean equals(Object other) {
-		boolean result = false;
 		if(other == this)
-			result = true;
+			return true;
 		else if(other != null && other instanceof Situation) {
 			Situation otherSituation = (Situation) other;
 			for(int i = 0; i < size.x; ++i)
 				for(int j = 0; j < size.y; ++j)
-					result = result && (getCar(i, j) == otherSituation.getCar(i, j));
+					if(getCar(i, j) != otherSituation.getCar(i, j))
+						return false;
+			return true;
 		}
-		return result;
+		return false;
 	}
 
 	@Override
