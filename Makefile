@@ -1,5 +1,6 @@
-FILES=ParkingEscape/*.java
+PACKAGEDIR=ParkingEscape
+FILES=$(PACKAGEDIR)/*.java
 
 all:
-	rm -f *.class
+	rm -f $(PACKAGEDIR)/*.class
 	javac $(FILES)

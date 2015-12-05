@@ -1,6 +1,9 @@
 package ParkingEscape;
 
 import java.awt.Point;
+import java.util.Vector;
+import java.util.List;
+import java.lang.IllegalArgumentException;
 
 public class Situation {
 	public enum Movement {
@@ -18,40 +21,44 @@ public class Situation {
 			parking[i] = new int[size.y];
     }
 
-	public void addCar(List<Point> positions) {
+	public void addCar(List<Point> positions) throws IllegalArgumentException {
 		if(positions.size() == 0)
 			return;
 		//Verify that there is not another car at specified positions
 		//and that positions are adjacents.
 		for(int i = 0; i < positions.size(); ++i) {
 			Point pos = positions.get(i);
-			if(getCar(pos) >= 0)
-				throw IllegalArgumentException("There arleady is a car at specified position.");
+			if(getCar(pos) >= 0) {
+				throw new IllegalArgumentException("There already is a car at specified position.");
+			}
 			if(i > 0) {
 				Point difference = positions.get(i - 1);
-				difference.translate(pos);
-				if(length(difference) > 1.)
-					throw IllegalArgumentException("Points specified for adding a car are not adjacents.");
+				difference.translate(pos.x, pos.y);
+				if(getLength(difference) > 1.) {
+					throw new IllegalArgumentException("Points specified are not adjacents.");
+				}
 			}
 		}
 		//All is fine, we can add the car
 		int newCar = carsPositions.size();
-		carsPositions.add(positions[0]);
-		for(Point pos : positions) {
+		carsPositions.add(positions.get(0));
+		for(Point pos : positions)
 			parking[pos.x][pos.y] = newCar;
-		}
 	}
 
 
-	public List<Movement> getPossibleMovements(int car) {
-		return {Up};
+	public List<Movement> getPossibleMovements(int car) throws IndexOutOfBoundsException, IllegalArgumentException {
+		if(car >= carsPositions.size())
+			throw new IndexOutOfBoundsException("The specified car does not exists.");
+		Vector<Movement> result = new Vector<>();
+		return result;
 	}
 
 	public void moveCar(int car, Movement movement) {
-		if(car >= numberOfCars)
-			throw IndexOutOfBoundsException("The specified car does not exists.");
+		if(car >= carsPositions.size())
+			throw new IndexOutOfBoundsException("The specified car does not exists.");
 		if(!getPossibleMovements(car).contains(movement))
-			throw IllegalArgumentException("Movement not supported by specified car.");
+			throw new IllegalArgumentException("Movement not supported by specified car.");
 		else {
 			//Do movement
 		}
@@ -67,17 +74,17 @@ public class Situation {
 
 	@Override
 	public boolean equals(Object other) {
-		boolean result = false;
 		if(other == this)
-			result = true;
+			return true;
 		else if(other != null && other instanceof Situation) {
-			result = true;
 			Situation otherSituation = (Situation) other;
 			for(int i = 0; i < size.x; ++i)
 				for(int j = 0; j < size.y; ++j)
-					result = result && (getCar(i, j) == otherSituation.getCar(i, j));
+					if(getCar(i, j) != otherSituation.getCar(i, j))
+						return false;
+			return true;
 		}
-		return result;
+		return false;
 	}
 
 	@Override
@@ -90,8 +97,8 @@ public class Situation {
 		return result;
 	}
 
-	private static float getLength(Point p) {
-		return hypot((double) p.x, (double) p.y);
+	private static double getLength(Point p) {
+		return Math.hypot((double) p.x, (double) p.y);
 	}
 }
 
