@@ -86,15 +86,14 @@ public class Situation {
 		return ret;
 	}
 
-	public List<Movement> getPossibleMovements(int car) throws IndexOutOfBoundsException{
+	public List<Movement> getPossibleMovements(int car) throws IndexOutOfBoundsException {
 		if(car >= carsPositions.size())
 			throw new IndexOutOfBoundsException("The specified car does not exist.");
 		Vector<Movement> result = new Vector<>();
 		List<Point> pos = getCarPosition(car);
-		Orientation orientation = carsOrientations.get(car);
-		Point previousCell = new Point(pos.get(0));
-		Point nextCell = new Point(pos.get(pos.size()-1));
-		if(orientation == Orientation.Horizontal) {
+		Point previousCell = new Point(pos.get(0)),
+		      nextCell = new Point(pos.get(pos.size()-1));
+		if(carsOrientations.get(car) == Orientation.Horizontal) {
 			previousCell.translate(-1, 0);
 			if(previousCell.x >= 0 && isCellEmpty(previousCell))
 				result.add(Movement.Left);

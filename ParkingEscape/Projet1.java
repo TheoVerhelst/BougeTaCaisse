@@ -24,8 +24,17 @@ public class Projet1
 		car.add(new Point(3, 3));
 		s.addCar(car);
 		System.out.println("Car added");
-		List<Situation.Movement> mvs = s.getPossibleMovements(s.getCar(car.get(0)));
+		int carId = s.getCar(car.get(0));
+		List<Situation.Movement> mvs = s.getPossibleMovements(carId);
 		for(Situation.Movement mv : mvs)
 			System.out.println(mv.name());
+		for(Situation.Movement m : Situation.Movement.values()) {
+			System.out.println("Moving " + m.name());
+			try {
+				s.moveCar(carId, m);
+			} catch (Exception e) {
+				System.out.println("Failed");
+			}
+		}
 	}
 }
