@@ -42,10 +42,8 @@ public class Situation {
 			}
 			if(i > 0) {
 				Point difference = positions.get(i - 1);
-				difference.translate(pos.x, pos.y);
-				if(getLength(difference) > 1.) {
+				if(Math.abs(difference.x-pos.x) + Math.abs(difference.y-pos.y) != 1)
 					throw new IllegalArgumentException("Points specified are not adjacent.");
-				}
 			}
 		}
 		//All is fine, we can add the car
@@ -64,23 +62,23 @@ public class Situation {
 		Vector<Point> ret = new Vector<>();
 		if(orientation == Orientation.Horizontal) {
 			int y = pos.y;
-			while(getCar(pos.x, pos.y) == car) {
+			while(isInParking(pos.x, y) && getCar(pos.x, y) == car) {
 				ret.add(new Point(pos.x, y));
 				++y;
 			}
 			y = pos.y - 1;
-			while(getCar(pos.x, y) == car) {
+			while(isInParking(pos.x, y) && getCar(pos.x, y) == car) {
 				ret.add(0, new Point(pos.x, y));
 				--y;
 			}
 		} else {
 			int x = pos.x;
-			while(getCar(x, pos.y) == car) {
+			while(isInParking(x, pos.y) && getCar(x, pos.y) == car) {
 				ret.add(new Point(x, pos.y));
 				++x;
 			}
 			x = pos.x-1;
-			while(getCar(x, pos.y) == car) {
+			while(isInParking(x, pos.y) && getCar(x, pos.y) == car) {
 				ret.add(0, new Point(x, pos.y)) ;
 				--x;
 			}
@@ -94,8 +92,8 @@ public class Situation {
 		Vector<Movement> result = new Vector<>();
 		List<Point> pos = getCarPosition(car);
 		Orientation orientation = carsOrientations.get(car);
-		Point previousCell = pos.get(0);
-		Point nextCell = pos.get(pos.size()-1);
+		Point previousCell = new Point(pos.get(0));
+		Point nextCell = new Point(pos.get(pos.size()-1));
 		if(orientation == Orientation.Horizontal) {
 			previousCell.translate(-1, 0);
 			if(previousCell.x >= 0 && isCellEmpty(previousCell))
@@ -157,12 +155,16 @@ public class Situation {
 		return result;
 	}
 
-	private static double getLength(Point p) {
-		return Math.hypot((double) p.x, (double) p.y);
-	}
-
 	private boolean isCellEmpty(Point cell) {
 		return getCar(cell) == 0;
+	}
+
+	private boolean isInParking(Point cell) {
+		return isInParking(cell.x, cell.y);
+	}
+
+	private boolean isInParking(int x, int y) {
+		return 0 <= x && x < this.size.x && 0 <= y && y < this.size.y;
 	}
 }
 
