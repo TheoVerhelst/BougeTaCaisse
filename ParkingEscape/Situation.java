@@ -15,6 +15,7 @@ public class Situation {
 	List<Point> carsPositions;
 
     public Situation(Point size) {
+		this.carsPositions = new Vector<>();
 		this.size = size;
 		parking = new int[size.x][];
 		for(int i = 0; i < size.x; ++i)
@@ -25,7 +26,7 @@ public class Situation {
 		if(positions.size() == 0)
 			return;
 		//Verify that there is not another car at specified positions
-		//and that positions are adjacents.
+		//and that positions are adjacent.
 		for(int i = 0; i < positions.size(); ++i) {
 			Point pos = positions.get(i);
 			if(getCar(pos) >= 0) {
@@ -35,7 +36,7 @@ public class Situation {
 				Point difference = positions.get(i - 1);
 				difference.translate(pos.x, pos.y);
 				if(getLength(difference) > 1.) {
-					throw new IllegalArgumentException("Points specified are not adjacents.");
+					throw new IllegalArgumentException("Points specified are not adjacent.");
 				}
 			}
 		}
@@ -47,14 +48,14 @@ public class Situation {
 	}
 
 
-	public List<Movement> getPossibleMovements(int car) throws IndexOutOfBoundsException, IllegalArgumentException {
+	public List<Movement> getPossibleMovements(int car) throws IndexOutOfBoundsException{
 		if(car >= carsPositions.size())
 			throw new IndexOutOfBoundsException("The specified car does not exists.");
 		Vector<Movement> result = new Vector<>();
 		return result;
 	}
 
-	public void moveCar(int car, Movement movement) {
+	public void moveCar(int car, Movement movement) throws IndexOutOfBoundsException, IllegalArgumentException {
 		if(car >= carsPositions.size())
 			throw new IndexOutOfBoundsException("The specified car does not exists.");
 		if(!getPossibleMovements(car).contains(movement))
