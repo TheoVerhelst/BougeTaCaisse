@@ -102,7 +102,7 @@ public class Situation {
 				result.add(Movement.Left);
 			nextCell.translate(+1, 0);
 			if(nextCell.x < this.size.x && getCar(nextCell) == 0)
-				result.add(Movement.Down);
+				result.add(Movement.Right);
 		} else {
 			previousCell.translate(0, -1);
 			if(previousCell.y >= 0 && getCar(previousCell) == 0)
