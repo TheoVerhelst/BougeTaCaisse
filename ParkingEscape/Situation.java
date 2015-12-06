@@ -37,7 +37,7 @@ public class Situation {
 			throw new IllegalArgumentException("Cars must be at least 2 units long.");
 		for(int i = 0; i < positions.size(); ++i) {
 			Point pos = positions.get(i);
-			if(getCar(pos) >= 0) {
+			if(!isCellEmpty(pos)) {
 				throw new IllegalArgumentException("There is already a car at specified position.");
 			}
 			if(i > 0) {
@@ -98,17 +98,17 @@ public class Situation {
 		Point nextCell = pos.get(pos.size()-1);
 		if(orientation == Orientation.Horizontal) {
 			previousCell.translate(-1, 0);
-			if(previousCell.x >= 0 && getCar(previousCell) == 0)
+			if(previousCell.x >= 0 && isCellEmpty(previousCell))
 				result.add(Movement.Left);
 			nextCell.translate(+1, 0);
-			if(nextCell.x < this.size.x && getCar(nextCell) == 0)
+			if(nextCell.x < this.size.x && isCellEmpty(nextCell))
 				result.add(Movement.Right);
 		} else {
 			previousCell.translate(0, -1);
-			if(previousCell.y >= 0 && getCar(previousCell) == 0)
+			if(previousCell.y >= 0 && isCellEmpty(previousCell))
 				result.add(Movement.Up);
 			nextCell.translate(0, +1);
-			if(nextCell.y < this.size.y && getCar(nextCell) == 0)
+			if(nextCell.y < this.size.y && isCellEmpty(nextCell))
 				result.add(Movement.Down);
 		}
 		return result;
@@ -159,6 +159,10 @@ public class Situation {
 
 	private static double getLength(Point p) {
 		return Math.hypot((double) p.x, (double) p.y);
+	}
+
+	private boolean isCellEmpty(Point cell) {
+		return getCar(cell) == 0;
 	}
 }
 
