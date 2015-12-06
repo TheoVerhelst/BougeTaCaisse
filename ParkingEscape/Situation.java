@@ -18,8 +18,8 @@ public class Situation {
 		this.carsPositions = new Vector<>();
 		this.size = size;
 		parking = new int[size.x][];
-		for(int i = 0; i < size.x; ++i)
-			parking[i] = new int[size.y];
+		for(int i = 0; i < size.y; ++i)
+			parking[i] = new int[size.x];
     }
 
 	public void addCar(List<Point> positions) throws IllegalArgumentException {
@@ -44,7 +44,7 @@ public class Situation {
 		int newCar = carsPositions.size();
 		carsPositions.add(positions.get(0));
 		for(Point pos : positions)
-			parking[pos.x][pos.y] = newCar;
+			parking[pos.y][pos.x] = newCar;
 	}
 
 
@@ -70,7 +70,7 @@ public class Situation {
 	}
 
 	public int getCar(int x, int y) {
-		return parking[x][y];
+		return parking[y][x];
 	}
 
 	@Override
@@ -92,8 +92,8 @@ public class Situation {
 	public int hashCode() {
 		final int prime = 31;
 		int result = prime + super.hashCode();
-		for(int i = 0; i < size.x; ++i)
-			for(int j = 0; j < size.y; ++j)
+		for(int i = 0; i < size.y; ++i)
+			for(int j = 0; j < size.x; ++j)
 				result = prime * result + parking[i][j];
 		return result;
 	}
