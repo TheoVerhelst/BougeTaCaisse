@@ -7,7 +7,17 @@ import java.lang.IllegalArgumentException;
 
 public class Situation {
 	public enum Movement {
-		Up, Down, Left, Right
+		Up(0), Down(1), Left(2), Right(3);
+
+		private final int value;
+
+		Movement(int value) {
+			this.value = value;
+		}
+
+		public int getValue() {
+			return value;
+		}
 	}
 
 	private enum Orientation {
@@ -16,8 +26,9 @@ public class Situation {
 
 	private final Point size;
 	private int[][] parking;
-	List<Point> carsPositions;
-	List<Orientation> carsOrientations;
+	private static final int emptyCell = 0;
+	private List<Point> carsPositions;
+	private List<Orientation> carsOrientations;
 
     public Situation(Point size) {
 		this.carsPositions = new Vector<>();
@@ -54,7 +65,7 @@ public class Situation {
 			parking[pos.y][pos.x] = newCar;
 	}
 	
-	public List<Point> getCarPosition(int car) throws IndexOutOfBoundsException {
+	public List<Point> getCarPositions(int car) throws IndexOutOfBoundsException {
 		if(car >= carsPositions.size())
 			throw new IndexOutOfBoundsException("The specified car does not exist");
 		Point pos = carsPositions.get(car);
@@ -90,7 +101,7 @@ public class Situation {
 		if(car >= carsPositions.size())
 			throw new IndexOutOfBoundsException("The specified car does not exist.");
 		Vector<Movement> result = new Vector<>();
-		List<Point> pos = getCarPosition(car);
+		List<Point> pos = getCarPositions(car);
 		Point previousCell = new Point(pos.get(0)),
 		      nextCell = new Point(pos.get(pos.size()-1));
 		if(carsOrientations.get(car) == Orientation.Horizontal) {
@@ -117,7 +128,14 @@ public class Situation {
 		if(!getPossibleMovements(car).contains(movement))
 			throw new IllegalArgumentException("Movement not supported by specified car.");
 		else {
-			//Do movement
+			final Point[] movementComposition = {new Point(0, -1), new Point(0, 1), new Point(-1, 0), new Point(1, 0)};
+			final int dx = movementComposition[movement.getValue()].x;
+			final int dy = movementComposition[movement.getValue()].y;
+			final List<Point> carPositions = getCarPositions(car);
+			for(Point carPosition : carPositions)
+				parking[carPosition.y][carPosition.x] = emptyCell;
+			for(Point carPosition : carPositions)
+				parking[carPosition.y + dy][carPosition.x + dx] = car;
 		}
 	}
 
@@ -155,7 +173,7 @@ public class Situation {
 	}
 
 	private boolean isCellEmpty(Point cell) {
-		return getCar(cell) == 0;
+		return getCar(cell) == emptyCell;
 	}
 
 	private boolean isInParking(Point cell) {

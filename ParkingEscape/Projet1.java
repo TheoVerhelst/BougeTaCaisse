@@ -26,6 +26,7 @@ public class Projet1
 		System.out.println("Car added");
 		int carId = s.getCar(car.get(0));
 		List<Situation.Movement> mvs = s.getPossibleMovements(carId);
+		System.out.println("Possible movements = " + mvs.toString());
 		for(Situation.Movement mv : mvs)
 			System.out.println(mv.name());
 		for(Situation.Movement m : Situation.Movement.values()) {
