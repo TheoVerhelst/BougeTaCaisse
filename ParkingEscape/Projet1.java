@@ -28,7 +28,7 @@ public class Projet1 {
 		otherCar.add(new Point(4, 3));
 		otherCar.add(new Point(4, 2));
 		int otherCarId = s.addCar(otherCar);
-		System.out.println("Other car added, Parking = \n" + s.toString());
+		System.out.println("Other car added, Parking =\n" + s.toString());
 		List<Situation.Movement> otherMvs = s.getPossibleMovements(otherCarId);
 		System.out.println("[Up, Down] = " + otherMvs.toString());
 		mvs = s.getPossibleMovements(carId);
@@ -37,6 +37,7 @@ public class Projet1 {
 			System.out.println("Moving " + m.name());
 			try {
 				s.moveCar(carId, m);
+				System.out.println("\t\tSuccessful, Parking =\n" + s.toString());
 			} catch (Exception e) {
 				System.out.println("\t\tFailed");
 			}
