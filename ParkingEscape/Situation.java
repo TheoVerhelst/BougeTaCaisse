@@ -195,7 +195,7 @@ public class Situation {
 			res += "\n|";
 			for(int j = 0; j < size.x; ++j) {
 				if(!isCellEmpty(j, i))
-					res += new Integer(getCar(j, i)).toString() + " ";
+					res += String.format("%2d", getCar(j, i));
 				else
 					res += "  ";
 				res += "|";
