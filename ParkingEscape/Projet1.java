@@ -22,9 +22,8 @@ public class Projet1
 		car.add(new Point(1, 3));
 		car.add(new Point(2, 3));
 		car.add(new Point(3, 3));
-		s.addCar(car);
+		int carId = s.addCar(car);
 		System.out.println("Car added");
-		int carId = s.getCar(car.get(0));
 		List<Situation.Movement> mvs = s.getPossibleMovements(carId);
 		System.out.println("Possible movements = " + mvs.toString());
 		for(Situation.Movement mv : mvs)

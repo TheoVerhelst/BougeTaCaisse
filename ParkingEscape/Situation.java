@@ -39,7 +39,7 @@ public class Situation {
 			parking[i] = new int[size.x];
     }
 
-	public void addCar(List<Point> positions) throws IllegalArgumentException {
+	public int addCar(List<Point> positions) throws IllegalArgumentException {
 		if(positions.size() == 0)
 			return;
 		//Verify that there is not another car at specified positions
@@ -63,6 +63,7 @@ public class Situation {
 		carsOrientations.add(positions.get(0).x - positions.get(1).x == 0 ? Orientation.Horizontal : Orientation.Vertical);
 		for(Point pos : positions)
 			parking[pos.y][pos.x] = newCar;
+		return newCar;
 	}
 	
 	public List<Point> getCarPositions(int car) throws IndexOutOfBoundsException {
