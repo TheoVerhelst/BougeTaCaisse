@@ -9,9 +9,14 @@ import java.io.FileNotFoundException;
 public class Main {
 	public static void main(String[] args) {
 		if(args.length != 1) {
-			System.out.println("usage : java Projet1 fichier");
+			System.out.println("usage : java Main file");
 		} else {
-			testIO(args[0]);
+			// testIO(args[0]);
+			try {
+				Graph g = IOManager.createGraph(args[0]);
+			} catch(IOException e) {
+				System.out.println("exception : " + e);
+			}
 		}
 	}
 

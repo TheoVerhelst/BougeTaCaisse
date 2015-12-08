@@ -10,7 +10,11 @@ public class IOManager {
 		List<String> content;
 		try {
 			content = readFile(path);
-			System.out.println(content);
+			String dims[] = content.get(0).split(": ")[1].split(" fois ");
+			int x = Integer.parseInt(dims[0]);
+			int y = Integer.parseInt(dims[1]);
+			int nbGoals = Integer.parseInt(content.get(2*y + 3).split(": ")[1]);
+			int nbCars = Integer.parseInt(content.get(2*y + 4).split(": ")[1]);
 		} catch(FileNotFoundException e) {
 			System.out.println("parameter file does not exist");
 		}
@@ -23,7 +27,7 @@ public class IOManager {
 		InputStream iStream = new FileInputStream(path);
 		BufferedReader buff = new BufferedReader(new InputStreamReader(iStream));
 		while((line = buff.readLine()) != null)
-			content.add(line + "\n");
+			content.add(line);
 		buff.close();
 		return content;
 	}
