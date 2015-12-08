@@ -172,7 +172,11 @@ public class Situation {
 	}
 
 	private boolean isCellEmpty(Point cell) {
-		return getCar(cell) == emptyCell;
+		return isCellEmpty(cell.x, cell.y);
+	}
+
+	private boolean isCellEmpty(int x, int y) {
+		return getCar(x, y) == emptyCell;
 	}
 
 	private boolean isInParking(Point cell) {
@@ -181,6 +185,26 @@ public class Situation {
 
 	private boolean isInParking(int x, int y) {
 		return 0 <= x && x < this.size.x && 0 <= y && y < this.size.y;
+	}
+
+	public String toString() {
+		String res = new String("+");
+		for(int i = 0; i < size.x; ++i)
+			res += "--+";
+		for(int i = 0; i < size.y; ++i) {
+			res += "\n|";
+			for(int j = 0; j < size.x; ++j) {
+				if(!isCellEmpty(j, i))
+					res += new Integer(getCar(j, i)).toString() + " ";
+				else
+					res += "  ";
+				res += "|";
+			}
+			res += "\n+";
+			for(int j = 0; j < size.x; ++j)
+				res += "--+";
+		}
+		return res += "\n";
 	}
 }
 

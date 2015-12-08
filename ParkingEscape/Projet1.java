@@ -20,9 +20,19 @@ public class Projet1 {
 		car.add(new Point(2, 3));
 		car.add(new Point(3, 3));
 		int carId = s.addCar(car);
-		System.out.println("Car added");
+		System.out.println("Car added, Parking = \n" + s.toString());
+
 		List<Situation.Movement> mvs = s.getPossibleMovements(carId);
-		System.out.println("Possible movements = " + mvs.toString());
+		System.out.println("[Left, Right] = " + mvs.toString());
+		Vector<Point> otherCar = new Vector<>();
+		otherCar.add(new Point(4, 3));
+		otherCar.add(new Point(4, 2));
+		int otherCarId = s.addCar(otherCar);
+		System.out.println("Other car added, Parking = \n" + s.toString());
+		List<Situation.Movement> otherMvs = s.getPossibleMovements(otherCarId);
+		System.out.println("[Up, Down] = " + otherMvs.toString());
+		mvs = s.getPossibleMovements(carId);
+		System.out.println("[Left] = " + mvs.toString());
 		for(Situation.Movement m : Situation.Movement.values()) {
 			System.out.println("Moving " + m.name());
 			try {
