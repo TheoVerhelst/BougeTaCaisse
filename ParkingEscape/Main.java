@@ -4,7 +4,7 @@ import java.awt.Point;
 import java.util.Vector;
 import java.util.List;
 
-public class Projet1 {
+public class Main {
 	public static void main(String[] args) {
 		if(args.length != 1) {
 			System.out.println("usage : java Projet1 fichier");
