@@ -187,6 +187,7 @@ public class Situation {
 		return 0 <= x && x < this.size.x && 0 <= y && y < this.size.y;
 	}
 
+	@Override
 	public String toString() {
 		String res = new String("+");
 		for(int i = 0; i < size.x; ++i)
