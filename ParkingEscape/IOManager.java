@@ -17,6 +17,10 @@ public class IOManager {
 			int nbCars = Integer.parseInt(content.get(2*y + 4).split(": ")[1]);
 		} catch(FileNotFoundException e) {
 			System.out.println("parameter file does not exist");
+			return null;
+		} catch(IndexOutOfBoundsException e) {
+			System.out.println("Unable to parse correctly: incorrect file format");
+			return null;
 		}
 		return ret;
     }
