@@ -3,17 +3,31 @@ package ParkingEscape;
 import java.awt.Point;
 import java.util.Vector;
 import java.util.List;
+import java.io.IOException;
+import java.io.FileNotFoundException;
 
 public class Main {
 	public static void main(String[] args) {
 		if(args.length != 1) {
 			System.out.println("usage : java Projet1 fichier");
 		} else {
-			test();
+			testIO(args[0]);
 		}
 	}
 
-	private static void test() {
+	private static void testIO(String path) {
+		List<String> fileContent;
+		try {
+			fileContent = IOManager.readFile(path);
+			System.out.println(fileContent);
+		} catch(FileNotFoundException e) {
+			System.out.println("given file does not exist");
+		} catch(IOException e) {
+			System.out.println("Error while using file");
+		}
+	}
+
+	private static void testSituation() {
 		Situation s = new Situation(new Point(5, 5));
 		Vector<Point> car = new Vector<>();
 		car.add(new Point(1, 3));
