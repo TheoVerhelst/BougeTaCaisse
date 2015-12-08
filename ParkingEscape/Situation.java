@@ -29,6 +29,7 @@ public class Situation {
 	private static final int emptyCell = 0;
 	private List<Point> carsPositions;
 	private List<Orientation> carsOrientations;
+	private static final Point[] movementComposition = {new Point(0, -1), new Point(0, 1), new Point(-1, 0), new Point(1, 0)};
 
     public Situation(Point size) {
 		this.carsPositions = new Vector<>();
@@ -40,11 +41,9 @@ public class Situation {
     }
 
 	public int addCar(List<Point> positions) throws IllegalArgumentException {
-		if(positions.size() == 0)
-			return;
 		//Verify that there is not another car at specified positions
 		//and that positions are adjacent.
-		if(positions.size() == 1)
+		if(positions.size() <= 1)
 			throw new IllegalArgumentException("Cars must be at least 2 units long.");
 		for(int i = 0; i < positions.size(); ++i) {
 			Point pos = positions.get(i);
@@ -58,21 +57,21 @@ public class Situation {
 			}
 		}
 		//All is fine, we can add the car
-		int newCar = carsPositions.size();
+		int newCar = carsPositions.size()+1;
 		carsPositions.add(positions.get(0));
-		carsOrientations.add(positions.get(0).x - positions.get(1).x == 0 ? Orientation.Horizontal : Orientation.Vertical);
+		carsOrientations.add(positions.get(0).x - positions.get(1).x == 0 ? Orientation.Vertical : Orientation.Horizontal);
 		for(Point pos : positions)
 			parking[pos.y][pos.x] = newCar;
 		return newCar;
 	}
 	
 	public List<Point> getCarPositions(int car) throws IndexOutOfBoundsException {
-		if(car >= carsPositions.size())
+		if(car > carsPositions.size())
 			throw new IndexOutOfBoundsException("The specified car does not exist");
-		Point pos = carsPositions.get(car);
-		Orientation orientation = carsOrientations.get(car);
+		Point pos = carsPositions.get(car-1);
+		Orientation orientation = carsOrientations.get(car-1);
 		Vector<Point> ret = new Vector<>();
-		if(orientation == Orientation.Horizontal) {
+		if(orientation == Orientation.Vertical) {
 			int y = pos.y;
 			while(isInParking(pos.x, y) && getCar(pos.x, y) == car) {
 				ret.add(new Point(pos.x, y));
@@ -99,13 +98,13 @@ public class Situation {
 	}
 
 	public List<Movement> getPossibleMovements(int car) throws IndexOutOfBoundsException {
-		if(car >= carsPositions.size())
+		if(car > carsPositions.size())
 			throw new IndexOutOfBoundsException("The specified car does not exist.");
 		Vector<Movement> result = new Vector<>();
 		List<Point> pos = getCarPositions(car);
 		Point previousCell = new Point(pos.get(0)),
 		      nextCell = new Point(pos.get(pos.size()-1));
-		if(carsOrientations.get(car) == Orientation.Horizontal) {
+		if(carsOrientations.get(car-1) == Orientation.Horizontal) {
 			previousCell.translate(-1, 0);
 			if(previousCell.x >= 0 && isCellEmpty(previousCell))
 				result.add(Movement.Left);
@@ -124,14 +123,13 @@ public class Situation {
 	}
 
 	public void moveCar(int car, Movement movement) throws IndexOutOfBoundsException, IllegalArgumentException {
-		if(car >= carsPositions.size())
+		if(car > carsPositions.size())
 			throw new IndexOutOfBoundsException("The specified car does not exist.");
 		if(!getPossibleMovements(car).contains(movement))
 			throw new IllegalArgumentException("Movement not supported by specified car.");
 		else {
-			final Point[] movementComposition = {new Point(0, -1), new Point(0, 1), new Point(-1, 0), new Point(1, 0)};
-			final int dx = movementComposition[movement.getValue()].x;
-			final int dy = movementComposition[movement.getValue()].y;
+			final int dx = this.movementComposition[movement.getValue()].x;
+			final int dy = this.movementComposition[movement.getValue()].y;
 			final List<Point> carPositions = getCarPositions(car);
 			for(Point carPosition : carPositions)
 				parking[carPosition.y][carPosition.x] = emptyCell;
