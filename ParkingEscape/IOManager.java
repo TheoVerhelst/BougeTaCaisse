@@ -40,6 +40,7 @@ public class IOManager {
 		Matcher matches = tuplesPattern.matcher(listAsString);
 		if(!matches.matches() || matches.groupCount() % 2 != 0)
 			throw new ParseException("List of positions is badly written.", 0);
+		//The groupCount does not contains matches.group(0), which is the entire match, so i must start at 1
 		for(int i = 1; i < matches.groupCount() + 1; i += 2)
 			ret.add(new Point(Integer.parseInt(matches.group(i)), Integer.parseInt(matches.group(i+1))));
 		return ret;

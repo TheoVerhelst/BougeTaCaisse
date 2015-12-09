@@ -12,7 +12,8 @@ public class Main {
 		if(args.length != 1) {
 			System.out.println("Usage : java ParkingEscape.Main FILE");
 		} else {
-			// testIO(args[0]);
+			testIO();
+			testSituation();
 			try {
 				Graph g = new Graph(IOManager.createSituation(args[0]));
 			} catch(Exception e) {
@@ -21,15 +22,21 @@ public class Main {
 		}
 	}
 
-	private static void testIO(String path) {
+	private static void testIO() {
 		List<String> fileContent;
 		try {
-			fileContent = IOManager.readFile(path);
-			System.out.println(fileContent);
+			String filePath = "Parking.txt";
+			fileContent = IOManager.readFile(filePath);
+			System.out.println("Raw file:");
+			for(String line : fileContent)
+				System.out.println(line);
+			System.out.println("Resulting situation:\n" + IOManager.createSituation(filePath));
 		} catch(FileNotFoundException e) {
 			System.out.println("Given file does not exist: " + e);
 		} catch(IOException e) {
 			System.out.println("Error while using file: " + e);
+		} catch(ParseException e) {
+			System.out.println("Error while parsing file: " + e);
 		}
 	}
 
@@ -40,15 +47,14 @@ public class Main {
 		car.add(new Point(2, 3));
 		car.add(new Point(3, 3));
 		int carId = s.addCar(car);
-		System.out.println("Car added, Parking = \n" + s.toString());
-
+		System.out.println("Car added, Parking = \n" + s);
 		List<Situation.Movement> mvs = s.getPossibleMovements(carId);
 		System.out.println("[Left, Right] = " + mvs.toString());
 		Vector<Point> otherCar = new Vector<>();
 		otherCar.add(new Point(4, 3));
 		otherCar.add(new Point(4, 2));
 		int otherCarId = s.addCar(otherCar);
-		System.out.println("Other car added, Parking =\n" + s.toString());
+		System.out.println("Other car added, Parking =\n" + s);
 		List<Situation.Movement> otherMvs = s.getPossibleMovements(otherCarId);
 		System.out.println("[Up, Down] = " + otherMvs.toString());
 		mvs = s.getPossibleMovements(carId);
@@ -57,10 +63,18 @@ public class Main {
 			System.out.println("Moving " + m.name());
 			try {
 				s.moveCar(carId, m);
-				System.out.println("\t\tSuccessful, Parking =\n" + s.toString());
-			} catch (Exception e) {
+				System.out.println("\t\tSuccessful, Parking =\n" + s);
+			} catch(Exception e) {
 				System.out.println("\t\tFailed");
 			}
 		}
+		try{
+			System.out.println("Moving Right");
+			s.moveCar(carId, Situation.Movement.Right);
+			System.out.println("It should not succed.");
+		} catch(Exception e) {
+			System.out.println("Failed, as it should be.");
+		}
+		System.out.println("Parking =\n" + s);
 	}
 }
