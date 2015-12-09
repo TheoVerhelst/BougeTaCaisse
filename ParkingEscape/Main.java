@@ -14,7 +14,7 @@ public class Main {
 		} else {
 			// testIO(args[0]);
 			try {
-				Graph g = IOManager.createGraph(args[0]);
+				Graph g = new Graph(IOManager.createSituation(args[0]));
 			} catch(Exception e) {
 				System.out.println("Exception : " + e);
 			}

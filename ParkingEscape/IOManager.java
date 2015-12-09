@@ -9,25 +9,22 @@ import java.awt.Point;
 import java.text.ParseException;
 
 public class IOManager {
-	public static Graph createGraph(String path) throws ParseException, FileNotFoundException, IOException {
+	public static Situation createSituation(String path) throws ParseException, FileNotFoundException, IOException {
 		List<String> content;
-		Graph ret;
-		Situation initialSituation;
+		Situation ret;
 		try {
 			content = readFile(path);
 			String dims[] = content.get(0).split(": ")[1].split(" fois ");
 			int x = Integer.parseInt(dims[0]);
 			int y = Integer.parseInt(dims[1]);
-			initialSituation = new Situation(x, y);
+			ret = new Situation(x, y);
 			int nbGoals = Integer.parseInt(content.get(2*y + 3).split(": ")[1]);
 			int nbCars = Integer.parseInt(content.get(2*y + 4).split(": ")[1]);
 			for(int i = 2*y + 6; i < content.size(); ++i)
-			{
-				if(content.get(0).contains("Goal")) {
-					int goalCar = initialSituation.getGoalCar();
-				}
-			}
-			ret = new Graph(initialSituation);
+				if(content.get(i).contains("Goal"))
+					ret.setGoalPositions(parseListPoint(content.get(i)));
+				else
+					ret.addCar(parseListPoint(content.get(i)));
 
 		} catch(IndexOutOfBoundsException e) {
 			throw new ParseException("Unable to parse correctly: incorrect file format.", 0);
@@ -35,7 +32,7 @@ public class IOManager {
 		return ret;
     }
 
-	public private List<Point> parseListPoint(String listAsString) throws ParseException{
+	private static List<Point> parseListPoint(String listAsString) throws ParseException {
 		List<Point> ret = new Vector<>();
 		//Get only the bracket-list after the semicolon
 		listAsString = listAsString.split(":")[1].trim();
