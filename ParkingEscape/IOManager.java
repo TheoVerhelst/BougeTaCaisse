@@ -36,11 +36,11 @@ public class IOManager {
 		List<Point> ret = new Vector<>();
 		//Get only the bracket-list after the semicolon
 		listAsString = listAsString.split(":")[1].trim();
-		Pattern tuplesPattern = Pattern.compile("\\[(?:\\((\\d+),\\s*(\\d+)\\),\\s*)\\]");
+		Pattern tuplesPattern = Pattern.compile("\\[\\((\\d+),\\s*(\\d+)\\)\\s*(?:,\\s*\\((\\d+),\\s*(\\d+)\\)\\s*)*\\]");
 		Matcher matches = tuplesPattern.matcher(listAsString);
 		if(!matches.matches() || matches.groupCount() % 2 != 0)
 			throw new ParseException("List of positions is badly written.", 0);
-		for(int i = 0; i < matches.groupCount(); i += 2)
+		for(int i = 1; i < matches.groupCount() + 1; i += 2)
 			ret.add(new Point(Integer.parseInt(matches.group(i)), Integer.parseInt(matches.group(i+1))));
 		return ret;
 	}
