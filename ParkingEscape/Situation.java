@@ -26,24 +26,34 @@ public class Situation {
 
 	private final Point size;
 	private int[][] parking;
-	private static final int emptyCell = 0;
 	private List<Point> carsPositions;
 	private List<Orientation> carsOrientations;
+	private static final int emptyCell = -1;
+	private static final int goalCell = 0;
 	private static final Point[] movementComposition = {new Point(0, -1), new Point(0, 1), new Point(-1, 0), new Point(1, 0)};
 
     public Situation(Point size) {
 		this.carsPositions = new Vector<>();
+		this.carsPositions.add(getGoalCar(), new Point(-1, -1));
 		this.carsOrientations = new Vector<>();
+		this.carsOrientations.add(getGoalCar(), Orientation.Vertical);
 		this.size = size;
 		parking = new int[size.y][];
-		for(int i = 0; i < size.y; ++i)
+		for(int i = 0; i < size.y; ++i) {
 			parking[i] = new int[size.x];
+			for(int j = 0; j < size.x; ++j)
+				setCar(emptyCell, j, i);
+		}
     }
 
-	public int addCar(List<Point> positions) throws IllegalArgumentException {
+	public Situation(int x, int y) {
+		this(new Point(x, y));
+	}
+
+	private void checkPositions(List<Point> positions) throws IllegalArgumentException {
 		//Verify that there is not another car at specified positions
 		//and that positions are adjacent.
-		if(positions.size() <= 1)
+		if(positions.size() < 2)
 			throw new IllegalArgumentException("Cars must be at least 2 units long.");
 		for(int i = 0; i < positions.size(); ++i) {
 			Point pos = positions.get(i);
@@ -56,17 +66,25 @@ public class Situation {
 					throw new IllegalArgumentException("Points specified are not adjacent.");
 			}
 		}
+	}
+
+	public void setCarPositions(int car, List<Point> positions) {
+		for(Point pos : positions)
+			setCar(car, pos);
+	}
+
+	public int addCar(List<Point> positions) throws IllegalArgumentException {
+		checkPositions(positions);
 		//All is fine, we can add the car
-		int newCar = carsPositions.size()+1;
+		int newCar = carsPositions.size();
 		carsPositions.add(positions.get(0));
 		carsOrientations.add(positions.get(0).x - positions.get(1).x == 0 ? Orientation.Vertical : Orientation.Horizontal);
-		for(Point pos : positions)
-			parking[pos.y][pos.x] = newCar;
+		setCarPositions(newCar, positions);
 		return newCar;
 	}
 	
 	public List<Point> getCarPositions(int car) throws IndexOutOfBoundsException {
-		if(car > carsPositions.size())
+		if(car >= carsPositions.size())
 			throw new IndexOutOfBoundsException("The specified car does not exist");
 		Point pos = carsPositions.get(car-1);
 		Orientation orientation = carsOrientations.get(car-1);
@@ -98,7 +116,7 @@ public class Situation {
 	}
 
 	public List<Movement> getPossibleMovements(int car) throws IndexOutOfBoundsException {
-		if(car > carsPositions.size())
+		if(car >= carsPositions.size())
 			throw new IndexOutOfBoundsException("The specified car does not exist.");
 		Vector<Movement> result = new Vector<>();
 		List<Point> pos = getCarPositions(car);
@@ -123,7 +141,7 @@ public class Situation {
 	}
 
 	public void moveCar(int car, Movement movement) throws IndexOutOfBoundsException, IllegalArgumentException {
-		if(car > carsPositions.size())
+		if(car >= carsPositions.size())
 			throw new IndexOutOfBoundsException("The specified car does not exist.");
 		if(!getPossibleMovements(car).contains(movement))
 			throw new IllegalArgumentException("Movement not supported by specified car.");
@@ -132,9 +150,9 @@ public class Situation {
 			final int dy = this.movementComposition[movement.getValue()].y;
 			final List<Point> carPositions = getCarPositions(car);
 			for(Point carPosition : carPositions)
-				parking[carPosition.y][carPosition.x] = emptyCell;
+				setCar(emptyCell, carPosition);
 			for(Point carPosition : carPositions)
-				parking[carPosition.y + dy][carPosition.x + dx] = car;
+				setCar(car, carPosition.y + dy, carPosition.x + dx);
 		}
 	}
 
@@ -145,6 +163,26 @@ public class Situation {
 	public int getCar(int x, int y) {
 		return parking[y][x];
 	}
+
+	private void setCar(int car, Point position) {
+		setCar(car, position.x, position.y);
+	}
+
+	private void setCar(int car, int x, int y) {
+		assert isInParking(x, y) : "Given position is not in parking: (" + x + ", " + y + ").";
+		parking[y][x] = car;
+	}
+
+	public static int getGoalCar() {
+		return goalCell;
+	}
+
+	public int setGoalPositions(List<Point> positions) throws IllegalArgumentException {
+		checkPositions(positions);
+		setCarPositions(getGoalCar(), positions);
+		return getGoalCar();
+	}
+
 
 	@Override
 	public boolean equals(Object other) {
@@ -167,7 +205,7 @@ public class Situation {
 		int result = prime + super.hashCode();
 		for(int i = 0; i < size.y; ++i)
 			for(int j = 0; j < size.x; ++j)
-				result = prime * result + parking[i][j];
+				result = prime * result + getCar(j, i);
 		return result;
 	}
 
