@@ -46,8 +46,8 @@ public class Situation {
 		}
     }
 
-	public Situation(int x, int y) {
-		this(new Point(x, y));
+	public Situation(int width, int height) {
+		this(new Point(width, height));
 	}
 
 	private void checkPositions(List<Point> positions) throws IllegalArgumentException {
