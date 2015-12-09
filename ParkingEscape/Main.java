@@ -1,7 +1,7 @@
 package ParkingEscape;
 
 import java.awt.Point;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.List;
 import java.io.IOException;
 import java.io.FileNotFoundException;
@@ -42,7 +42,7 @@ public class Main {
 
 	private static void testSituation() {
 		Situation s = new Situation(new Point(5, 5));
-		Vector<Point> car = new Vector<>();
+		ArrayList<Point> car = new ArrayList<>();
 		car.add(new Point(1, 3));
 		car.add(new Point(2, 3));
 		car.add(new Point(3, 3));
@@ -50,7 +50,7 @@ public class Main {
 		System.out.println("Car added in " + car + ", Parking = \n" + s);
 		List<Situation.Movement> mvs = s.getPossibleMovements(carId);
 		System.out.println("[Left, Right] = " + mvs.toString());
-		Vector<Point> otherCar = new Vector<>();
+		ArrayList<Point> otherCar = new ArrayList<>();
 		otherCar.add(new Point(4, 3));
 		otherCar.add(new Point(4, 2));
 		int otherCarId = s.addCar(otherCar);

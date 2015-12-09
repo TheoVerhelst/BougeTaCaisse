@@ -2,7 +2,7 @@ package ParkingEscape;
 
 import java.io.*;
 import java.util.List;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.awt.Point;
@@ -33,7 +33,7 @@ public class IOManager {
     }
 
 	private static List<Point> parseListPoint(String listAsString) throws ParseException {
-		List<Point> ret = new Vector<>();
+		List<Point> ret = new ArrayList<>();
 		//Get only the bracket-list after the semicolon
 		listAsString = listAsString.split(":")[1].trim();
 		Pattern tuplesPattern = Pattern.compile("\\[\\((\\d+),\\s*(\\d+)\\)\\s*(?:,\\s*\\((\\d+),\\s*(\\d+)\\)\\s*)*\\]");
@@ -48,7 +48,7 @@ public class IOManager {
 
 	public static List<String> readFile(String path) throws FileNotFoundException, IOException {
 		String line;
-		List<String> content = new Vector<>();
+		List<String> content = new ArrayList<>();
 		InputStream iStream = new FileInputStream(path);
 		BufferedReader buff = new BufferedReader(new InputStreamReader(iStream));
 		while((line = buff.readLine()) != null)

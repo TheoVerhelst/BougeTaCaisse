@@ -1,7 +1,7 @@
 package ParkingEscape;
 
 import java.awt.Point;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.List;
 import java.lang.IllegalArgumentException;
 
@@ -33,9 +33,9 @@ public class Situation {
 	private static final Point[] movementComposition = {new Point(0, -1), new Point(0, 1), new Point(-1, 0), new Point(1, 0)};
 
     public Situation(Point size) {
-		this.carsPositions = new Vector<>();
+		this.carsPositions = new ArrayList<>();
 		this.carsPositions.add(getGoalCar(), new Point(-1, -1));
-		this.carsOrientations = new Vector<>();
+		this.carsOrientations = new ArrayList<>();
 		this.carsOrientations.add(getGoalCar(), Orientation.Vertical);
 		this.size = size;
 		parking = new int[size.y][];
@@ -88,7 +88,7 @@ public class Situation {
 			throw new IndexOutOfBoundsException("The specified car does not exist");
 		Point pos = carsPositions.get(car);
 		Orientation orientation = carsOrientations.get(car);
-		Vector<Point> ret = new Vector<>();
+		ArrayList<Point> ret = new ArrayList<>();
 		if(orientation == Orientation.Vertical) {
 			int y = pos.y;
 			while(isInParking(pos.x, y) && getCar(pos.x, y) == car) {
@@ -118,7 +118,7 @@ public class Situation {
 	public List<Movement> getPossibleMovements(int car) throws IndexOutOfBoundsException {
 		if(car >= carsPositions.size())
 			throw new IndexOutOfBoundsException("The specified car does not exist.");
-		Vector<Movement> result = new Vector<>();
+		ArrayList<Movement> result = new ArrayList<>();
 		List<Point> pos = getCarPositions(car);
 		Point previousCell = new Point(pos.get(0)),
 		      nextCell = new Point(pos.get(pos.size()-1));
