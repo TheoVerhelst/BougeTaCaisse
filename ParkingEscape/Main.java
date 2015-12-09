@@ -47,14 +47,14 @@ public class Main {
 		car.add(new Point(2, 3));
 		car.add(new Point(3, 3));
 		int carId = s.addCar(car);
-		System.out.println("Car added, Parking = \n" + s);
+		System.out.println("Car added in " + car + ", Parking = \n" + s);
 		List<Situation.Movement> mvs = s.getPossibleMovements(carId);
 		System.out.println("[Left, Right] = " + mvs.toString());
 		Vector<Point> otherCar = new Vector<>();
 		otherCar.add(new Point(4, 3));
 		otherCar.add(new Point(4, 2));
 		int otherCarId = s.addCar(otherCar);
-		System.out.println("Other car added, Parking =\n" + s);
+		System.out.println("Other car added in " + otherCar + ", Parking =\n" + s);
 		List<Situation.Movement> otherMvs = s.getPossibleMovements(otherCarId);
 		System.out.println("[Up, Down] = " + otherMvs.toString());
 		mvs = s.getPossibleMovements(carId);
@@ -63,17 +63,19 @@ public class Main {
 			System.out.println("Moving " + m.name());
 			try {
 				s.moveCar(carId, m);
-				System.out.println("\t\tSuccessful, Parking =\n" + s);
+				System.out.println("\tSuccessful.");
 			} catch(Exception e) {
-				System.out.println("\t\tFailed");
+				System.out.println("\tFailed.");
 			}
 		}
+		System.out.println("It should have shown:");
+		System.out.println("\tFailed for Up and Down, and Successful for Left and Right");
 		try{
 			System.out.println("Moving Right");
 			s.moveCar(carId, Situation.Movement.Right);
 			System.out.println("It should not succed.");
 		} catch(Exception e) {
-			System.out.println("Failed, as it should be.");
+			System.out.println("\tFailed, as it should be.");
 		}
 		System.out.println("Parking =\n" + s);
 	}

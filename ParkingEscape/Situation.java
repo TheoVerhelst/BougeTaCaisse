@@ -68,7 +68,7 @@ public class Situation {
 		}
 	}
 
-	public void setCarPositions(int car, List<Point> positions) {
+	private void setCarPositions(int car, List<Point> positions) {
 		for(Point pos : positions)
 			setCar(car, pos);
 	}
@@ -86,8 +86,8 @@ public class Situation {
 	public List<Point> getCarPositions(int car) throws IndexOutOfBoundsException {
 		if(car >= carsPositions.size())
 			throw new IndexOutOfBoundsException("The specified car does not exist");
-		Point pos = carsPositions.get(car-1);
-		Orientation orientation = carsOrientations.get(car-1);
+		Point pos = carsPositions.get(car);
+		Orientation orientation = carsOrientations.get(car);
 		Vector<Point> ret = new Vector<>();
 		if(orientation == Orientation.Vertical) {
 			int y = pos.y;
@@ -122,7 +122,7 @@ public class Situation {
 		List<Point> pos = getCarPositions(car);
 		Point previousCell = new Point(pos.get(0)),
 		      nextCell = new Point(pos.get(pos.size()-1));
-		if(carsOrientations.get(car-1) == Orientation.Horizontal) {
+		if(carsOrientations.get(car) == Orientation.Horizontal) {
 			previousCell.translate(-1, 0);
 			if(previousCell.x >= 0 && isCellEmpty(previousCell))
 				result.add(Movement.Left);
@@ -152,7 +152,7 @@ public class Situation {
 			for(Point carPosition : carPositions)
 				setCar(emptyCell, carPosition);
 			for(Point carPosition : carPositions)
-				setCar(car, carPosition.y + dy, carPosition.x + dx);
+				setCar(car, carPosition.x+ dx, carPosition.y + dy);
 		}
 	}
 
