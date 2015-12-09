@@ -3,9 +3,10 @@ package ParkingEscape;
 import java.io.*;
 import java.util.List;
 import java.util.Vector;
+import java.text.ParseException;
 
 public class IOManager {
-	public static Graph createGraph(String path) throws IOException {
+	public static Graph createGraph(String path) throws ParseException, FileNotFoundException, IOException {
 		Graph ret = new Graph();
 		List<String> content;
 		try {
@@ -15,18 +16,14 @@ public class IOManager {
 			int y = Integer.parseInt(dims[1]);
 			int nbGoals = Integer.parseInt(content.get(2*y + 3).split(": ")[1]);
 			int nbCars = Integer.parseInt(content.get(2*y + 4).split(": ")[1]);
-		} catch(FileNotFoundException e) {
-			System.out.println("parameter file does not exist");
-			return null;
 		} catch(IndexOutOfBoundsException e) {
-			System.out.println("Unable to parse correctly: incorrect file format");
-			return null;
+			throw new ParseException("Unable to parse correctly: incorrect file format.", 0);
 		}
 		return ret;
     }
 
 	public static List<String> readFile(String path) throws FileNotFoundException, IOException {
-		String line = "";
+		String line;
 		List<String> content = new Vector<>();
 		InputStream iStream = new FileInputStream(path);
 		BufferedReader buff = new BufferedReader(new InputStreamReader(iStream));

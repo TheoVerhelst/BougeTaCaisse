@@ -5,17 +5,18 @@ import java.util.Vector;
 import java.util.List;
 import java.io.IOException;
 import java.io.FileNotFoundException;
+import java.text.ParseException;
 
 public class Main {
 	public static void main(String[] args) {
 		if(args.length != 1) {
-			System.out.println("usage : java Main file");
+			System.out.println("Usage : java ParkingEscape.Main FILE");
 		} else {
 			// testIO(args[0]);
 			try {
 				Graph g = IOManager.createGraph(args[0]);
-			} catch(IOException e) {
-				System.out.println("exception : " + e);
+			} catch(Exception e) {
+				System.out.println("Exception : " + e);
 			}
 		}
 	}
@@ -26,9 +27,9 @@ public class Main {
 			fileContent = IOManager.readFile(path);
 			System.out.println(fileContent);
 		} catch(FileNotFoundException e) {
-			System.out.println("given file does not exist");
+			System.out.println("Given file does not exist: " + e);
 		} catch(IOException e) {
-			System.out.println("Error while using file");
+			System.out.println("Error while using file: " + e);
 		}
 	}
 
