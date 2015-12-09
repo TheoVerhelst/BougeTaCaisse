@@ -2,13 +2,25 @@ package ParkingEscape;
 
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.ArrayDeque;
+import java.awt.Point;
 
 public class Graph {
 	private HashMap<Situation, Integer> situations;
 	private ArrayList<ArrayList<Boolean>> adjacencyMatrix;
+	private final Point exit;
+	private ArrayDeque<Integer> blockingCars;
 
 	public Graph(Situation initialSituation) {
+		situations = new HashMap<Situation, Integer>();
+		adjacencyMatrix = new ArrayList<ArrayList<Boolean>>();
+		exit = new Point(5, 3);
+		blockingCars = new ArrayDeque<Integer>();
 		addSituation(initialSituation);
+	}
+
+	public void solve() {
+		//Amazing stuffs go here
 	}
 
 	private int addSituation(Situation situation) {
