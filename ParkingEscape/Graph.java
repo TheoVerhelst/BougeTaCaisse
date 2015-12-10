@@ -8,13 +8,11 @@ import java.awt.Point;
 public class Graph {
 	private HashMap<Situation, Integer> situations;
 	private ArrayList<ArrayList<Boolean>> adjacencyMatrix;
-	private final Point exit;
 	private ArrayDeque<Integer> blockingCars;
 
 	public Graph(Situation initialSituation) {
 		situations = new HashMap<Situation, Integer>();
 		adjacencyMatrix = new ArrayList<ArrayList<Boolean>>();
-		exit = new Point(5, 3);
 		blockingCars = new ArrayDeque<Integer>();
 		addSituation(initialSituation);
 	}
@@ -27,7 +25,7 @@ public class Graph {
 		final int index = situations.size();
 		situations.put(situation, index);
 		final int matrixIndex = addMatrixEntry();
-		assert matrixIndex == index : "adjacencyMatrix and situations has different sizes.";
+		assert matrixIndex == index : "adjacencyMatrix and situations have different sizes.";
 		return index;
 	}
 

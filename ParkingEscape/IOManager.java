@@ -18,14 +18,31 @@ public class IOManager {
 			int x = Integer.parseInt(dims[0]);
 			int y = Integer.parseInt(dims[1]);
 			ret = new Situation(x, y);
-			int nbGoals = Integer.parseInt(content.get(2*y + 3).split(": ")[1]);
-			int nbCars = Integer.parseInt(content.get(2*y + 4).split(": ")[1]);
-			for(int i = 2*y + 6; i < content.size(); ++i)
+			for(int i = 2*y + 6; i < content.size(); ++i) {
 				if(content.get(i).contains("Goal"))
 					ret.setGoalPositions(parseListPoint(content.get(i)));
 				else
 					ret.addCar(parseListPoint(content.get(i)));
-
+			}
+			assert ret.getCarPositions(ret.getGoalCar()).size() != 0 : "No goal car found in Parking";
+			if(ret.getCarOrientation(ret.getGoalCar()) == Situation.Orientation.Horizontal) {
+				int GoalY = ret.getCarPositions(ret.getGoalCar()).get(0).y;
+				String line = content.get(2*(1+GoalY));
+				if(line.charAt(0) == ' ')
+					ret.setExit(0, GoalY);
+				else if(line.charAt(line.length()-1) == ' ')
+					ret.setExit(x-1, GoalY);
+				else
+					throw new ParseException("No valid exit was found.", 0);
+			} else {
+				int GoalX = ret.getCarPositions(ret.getGoalCar()).get(0).x;
+				if(content.get(1).substring(1 + 4*GoalX, 4*(GoalX+1)) == "   ")
+					ret.setExit(GoalX, 0);
+				else if(content.get(1+2*y).substring(1 + 4*GoalX, 4*(GoalX+1)) == "   ")
+					ret.setExit(GoalX, y-1);
+				else
+					throw new ParseException("No valid exit was found.", 0);
+			}
 		} catch(IndexOutOfBoundsException e) {
 			throw new ParseException("Unable to parse correctly: incorrect file format.", 0);
 		}

@@ -20,7 +20,7 @@ public class Situation {
 		}
 	}
 
-	private enum Orientation {
+	public enum Orientation {
 		Vertical, Horizontal
 	}
 
@@ -31,6 +31,7 @@ public class Situation {
 	private static final int emptyCell = -1;
 	private static final int goalCell = 0;
 	private static final Point[] movementComposition = {new Point(0, -1), new Point(0, 1), new Point(-1, 0), new Point(1, 0)};
+	private static Point exit;
 
     public Situation(Point size) {
 		this.carsPositions = new ArrayList<>();
@@ -180,9 +181,18 @@ public class Situation {
 	public int setGoalPositions(List<Point> positions) throws IllegalArgumentException {
 		checkPositions(positions);
 		setCarPositions(getGoalCar(), positions);
+		carsPositions.set(0, positions.get(0));
+		carsOrientations.set(getGoalCar(), positions.get(0).x - positions.get(1).x == 0 ? Orientation.Vertical : Orientation.Horizontal);
 		return getGoalCar();
 	}
 
+    public void setExit(int x, int y) {
+        Situation.exit = new Point(x, y);
+    }
+    
+    public Point getExit() {
+        return new Point(this.exit);
+    }
 
 	@Override
 	public boolean equals(Object other) {
@@ -244,6 +254,12 @@ public class Situation {
 				res += "--+";
 		}
 		return res += "\n";
+	}
+	
+	public Orientation getCarOrientation(int car) {
+	    if(car >= this.carsOrientations.size())
+	        throw new IndexOutOfBoundsException("Specified car does not exist");
+	    return this.carsOrientations.get(car);
 	}
 }
 
