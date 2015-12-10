@@ -7,16 +7,16 @@ import java.lang.IllegalArgumentException;
 
 public class Situation {
 	public enum Movement {
-		Up(0), Down(1), Left(2), Right(3);
+		Up(compositions[0]), Down(compositions[1]), Left(compositions[2]), Right(compositions[3]);
+		private final Point composition;
+		private static final Point[] compositions = {new Point(0, -1), new Point(0, 1), new Point(-1, 0), new Point(1, 0)};
 
-		private final int value;
-
-		Movement(int value) {
-			this.value = value;
+		Movement(Point composition) {
+			this.composition = composition;
 		}
 
-		public int getValue() {
-			return value;
+		public Point getComposition() {
+			return composition;
 		}
 	}
 
@@ -30,7 +30,6 @@ public class Situation {
 	private List<Orientation> carsOrientations;
 	private static final int emptyCell = -1;
 	private static final int goalCell = 0;
-	private static final Point[] movementComposition = {new Point(0, -1), new Point(0, 1), new Point(-1, 0), new Point(1, 0)};
 	private static Point exit;
 
 	public Situation(Point size) {
@@ -43,7 +42,7 @@ public class Situation {
 		for(int i = 0; i < size.y; ++i) {
 			parking[i] = new int[size.x];
 			for(int j = 0; j < size.x; ++j)
-				setCar(emptyCell, j, i);
+				setCar(getEmptyCell(), j, i);
 		}
 	}
 
@@ -147,11 +146,11 @@ public class Situation {
 		if(!getPossibleMovements(car).contains(movement))
 			throw new IllegalArgumentException("Movement not supported by specified car.");
 		else {
-			final int dx = this.movementComposition[movement.getValue()].x;
-			final int dy = this.movementComposition[movement.getValue()].y;
+			final int dx = movement.getComposition().x;
+			final int dy = movement.getComposition().y;
 			final List<Point> carPositions = getCarPositions(car);
 			for(Point carPosition : carPositions)
-				setCar(emptyCell, carPosition);
+				setCar(getEmptyCell(), carPosition);
 			for(Point carPosition : carPositions)
 				setCar(car, carPosition.x+ dx, carPosition.y + dy);
 		}
@@ -176,6 +175,10 @@ public class Situation {
 
 	public static int getGoalCar() {
 		return goalCell;
+	}
+
+	public static int getEmptyCell() {
+		return emptyCell;
 	}
 
 	public int setGoalPositions(List<Point> positions) throws IllegalArgumentException {
@@ -224,7 +227,7 @@ public class Situation {
 	}
 
 	private boolean isCellEmpty(int x, int y) {
-		return getCar(x, y) == emptyCell;
+		return getCar(x, y) == getEmptyCell();
 	}
 
 	private boolean isInParking(Point cell) {
@@ -260,6 +263,10 @@ public class Situation {
 		if(car >= this.carsOrientations.size())
 			throw new IndexOutOfBoundsException("Specified car does not exist");
 		return this.carsOrientations.get(car);
+	}
+
+	public Point getSize() {
+		return size;
 	}
 }
 

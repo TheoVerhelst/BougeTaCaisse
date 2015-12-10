@@ -41,4 +41,10 @@ public class Graph {
 		adjacencyMatrix.add(newRow);
 		return index;
 	}
+
+	private void linkSituations(int i, int j) {
+		assert i < adjacencyMatrix.size() && j < adjacencyMatrix.size();
+		adjacencyMatrix.get(i).set(j, true);
+		adjacencyMatrix.get(j).set(i, true);
+	}
 }
