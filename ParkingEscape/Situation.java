@@ -33,7 +33,7 @@ public class Situation {
 	private static final Point[] movementComposition = {new Point(0, -1), new Point(0, 1), new Point(-1, 0), new Point(1, 0)};
 	private static Point exit;
 
-    public Situation(Point size) {
+	public Situation(Point size) {
 		this.carsPositions = new ArrayList<>();
 		this.carsPositions.add(getGoalCar(), new Point(-1, -1));
 		this.carsOrientations = new ArrayList<>();
@@ -45,7 +45,7 @@ public class Situation {
 			for(int j = 0; j < size.x; ++j)
 				setCar(emptyCell, j, i);
 		}
-    }
+	}
 
 	public Situation(int width, int height) {
 		this(new Point(width, height));
@@ -186,13 +186,13 @@ public class Situation {
 		return getGoalCar();
 	}
 
-    public void setExit(int x, int y) {
-        Situation.exit = new Point(x, y);
-    }
-    
-    public Point getExit() {
-        return new Point(this.exit);
-    }
+	public static void setExit(int x, int y) {
+		Situation.exit = new Point(x, y);
+	}
+	
+	public static Point getExit() {
+		return new Point(exit);
+	}
 
 	@Override
 	public boolean equals(Object other) {
@@ -257,9 +257,9 @@ public class Situation {
 	}
 	
 	public Orientation getCarOrientation(int car) {
-	    if(car >= this.carsOrientations.size())
-	        throw new IndexOutOfBoundsException("Specified car does not exist");
-	    return this.carsOrientations.get(car);
+		if(car >= this.carsOrientations.size())
+			throw new IndexOutOfBoundsException("Specified car does not exist");
+		return this.carsOrientations.get(car);
 	}
 }
 
