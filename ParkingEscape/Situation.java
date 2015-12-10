@@ -87,32 +87,20 @@ public class Situation {
 	
 	public List<Point> getCarPositions(int car) throws IndexOutOfBoundsException {
 		if(car >= carsPositions.size())
-			throw new IndexOutOfBoundsException("The specified car does not exist");
+			throw new IndexOutOfBoundsException("The specified car does not exist.");
 		Point pos = carsPositions.get(car);
 		Orientation orientation = carsOrientations.get(car);
 		ArrayList<Point> ret = new ArrayList<>();
 		if(orientation == Orientation.Vertical) {
-			int y = pos.y;
-			while(isInParking(pos.x, y) && getCar(pos.x, y) == car) {
+			for(int y = pos.y; isInParking(pos.x, y) && getCar(pos.x, y) == car; ++y)
 				ret.add(new Point(pos.x, y));
-				++y;
-			}
-			y = pos.y - 1;
-			while(isInParking(pos.x, y) && getCar(pos.x, y) == car) {
+			for(int y = pos.y - 1; isInParking(pos.x, y) && getCar(pos.x, y) == car; --y)
 				ret.add(0, new Point(pos.x, y));
-				--y;
-			}
 		} else {
-			int x = pos.x;
-			while(isInParking(x, pos.y) && getCar(x, pos.y) == car) {
+			for(int x = pos.x; isInParking(x, pos.y) && getCar(x, pos.y) == car; ++x)
 				ret.add(new Point(x, pos.y));
-				++x;
-			}
-			x = pos.x-1;
-			while(isInParking(x, pos.y) && getCar(x, pos.y) == car) {
-				ret.add(0, new Point(x, pos.y)) ;
-				--x;
-			}
+			for(int x = pos.x - 1; isInParking(x, pos.y) && getCar(x, pos.y) == car; --x)
+				ret.add(0, new Point(x, pos.y));
 		}
 		return ret;
 	}
