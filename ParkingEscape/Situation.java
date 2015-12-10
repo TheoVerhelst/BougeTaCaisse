@@ -7,9 +7,11 @@ import java.lang.IllegalArgumentException;
 
 public class Situation {
 	public enum Movement {
-		Up(compositions[0]), Down(compositions[1]), Left(compositions[2]), Right(compositions[3]);
+		Up(new Point(0, -1)),
+		Down(new Point(0, 1)),
+		Left(new Point(-1, 0)),
+		Right(new Point(1, 0));
 		private final Point composition;
-		private static final Point[] compositions = {new Point(0, -1), new Point(0, 1), new Point(-1, 0), new Point(1, 0)};
 
 		Movement(Point composition) {
 			this.composition = composition;
