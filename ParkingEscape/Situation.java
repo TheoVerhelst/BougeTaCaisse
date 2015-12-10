@@ -86,8 +86,7 @@ public class Situation {
 	}
 	
 	public List<Point> getCarPositions(int car) throws IndexOutOfBoundsException {
-		if(car >= carsPositions.size())
-			throw new IndexOutOfBoundsException("The specified car does not exist.");
+		checkCarArgument(car);
 		Point pos = carsPositions.get(car);
 		Orientation orientation = carsOrientations.get(car);
 		ArrayList<Point> ret = new ArrayList<>();
@@ -105,11 +104,32 @@ public class Situation {
 		return ret;
 	}
 
+	public int getBlockingCar(int car, Movement blockedMovement) throws IndexOutOfBoundsException, IllegalArgumentException {
+		checkCarArgument(car);
+		final Orientation carOrientation = getCarOrientation(car);
+		if(((blockedMovement == Movement.Left || blockedMovement == Movement.Right) && carOrientation != Orientation.Horizontal)
+				|| ((blockedMovement == Movement.Up || blockedMovement == Movement.Down) && carOrientation != Orientation.Vertical))
+			throw new IllegalArgumentException("The movement argument is not consistent with the orientation of the car argument.");
+
+		final List<Point> pos = getCarPositions(car);
+		Point previousCell = new Point(pos.get(0));
+		Point nextCell = new Point(pos.get(pos.size()-1));
+		final int dx = blockedMovement.getComposition().x;
+		final int dy = blockedMovement.getComposition().y;
+		previousCell.translate(dx, dy);
+		nextCell.translate(dx, dy);
+		if(isInParking(previousCell) && getCar(previousCell) != car)
+			return getCar(previousCell);
+		else if(isInParking(nextCell) && getCar(nextCell) != car)
+			return getCar(nextCell);
+		else
+			return getEmptyCell();
+	}
+
 	public List<Movement> getPossibleMovements(int car) throws IndexOutOfBoundsException {
-		if(car >= carsPositions.size())
-			throw new IndexOutOfBoundsException("The specified car does not exist.");
+		checkCarArgument(car);
 		ArrayList<Movement> result = new ArrayList<>();
-		List<Point> pos = getCarPositions(car);
+		final List<Point> pos = getCarPositions(car);
 		Point previousCell = new Point(pos.get(0)),
 		      nextCell = new Point(pos.get(pos.size()-1));
 		if(carsOrientations.get(car) == Orientation.Horizontal) {
@@ -131,8 +151,7 @@ public class Situation {
 	}
 
 	public void moveCar(int car, Movement movement) throws IndexOutOfBoundsException, IllegalArgumentException {
-		if(car >= carsPositions.size())
-			throw new IndexOutOfBoundsException("The specified car does not exist.");
+		checkCarArgument(car);
 		if(!getPossibleMovements(car).contains(movement))
 			throw new IllegalArgumentException("Movement not supported by specified car.");
 		else {
@@ -228,6 +247,11 @@ public class Situation {
 		return 0 <= x && x < this.size.x && 0 <= y && y < this.size.y;
 	}
 
+	private void checkCarArgument(int car) throws IndexOutOfBoundsException {
+		if(car >= carsPositions.size())
+			throw new IndexOutOfBoundsException("The specified car does not exist.");
+	}
+
 	@Override
 	public String toString() {
 		String res = new String("+");
@@ -250,8 +274,7 @@ public class Situation {
 	}
 	
 	public Orientation getCarOrientation(int car) {
-		if(car >= this.carsOrientations.size())
-			throw new IndexOutOfBoundsException("Specified car does not exist");
+		checkCarArgument(car);
 		return this.carsOrientations.get(car);
 	}
 
