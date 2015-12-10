@@ -1,7 +1,18 @@
-PACKAGEDIR=ParkingEscape
-FILES=$(PACKAGEDIR)/*.java
+PACKAGE=ParkingEscape
+FILES=$(PACKAGE)/*.java
+MAINCLASS=Main
+TESTFILE=Parking.txt
 
-all:
+all: clear build
+
+clear:
 	clear
-	rm -f $(PACKAGEDIR)/*.class
+
+build: clean
 	javac $(FILES)
+
+clean:
+	rm -f $(PACKAGE)/*.class
+
+test:
+	java $(PACKAGE).$(MAINCLASS) $(TESTFILE)
