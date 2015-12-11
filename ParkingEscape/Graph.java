@@ -76,6 +76,25 @@ public class Graph {
 		return index;
 	}
 
+	private boolean isTargetSituation(Situation situation) {
+		final int goal = Situation.getGoalCar();
+		final Point exitPos = Situation.getExit();
+		for(Point goalPos : situation.getCarPositions(goal)) {
+			if(situation.getCarOrientation(goal) == Situation.Orientation.Horizontal) {
+				if(goalPos.y != exitPos.y)
+					return false;
+				if(Math.abs(goalPos.x - exitPos.x) == 1)
+					return true;
+			} else {
+				if(goalPos.x != exitPos.x)
+					return false;
+				if(Math.abs(goalPos.y - exitPos.y) == 1)
+					return true;
+			}
+		}
+		return false;
+	}
+
 	private int addMatrixEntry() {
 		final int index = adjacencyMatrix.size();
 		for(int i = 0; i < index; ++i)
