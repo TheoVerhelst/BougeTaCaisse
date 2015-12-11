@@ -1,6 +1,7 @@
 package ParkingEscape;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.ArrayList;
@@ -30,7 +31,30 @@ public class Graph {
 		if((goalOrientation == Situation.Orientation.Vertical && goalPos.x != exitPos.x)
 				|| (goalOrientation == Situation.Orientation.Horizontal && goalPos.y != exitPos.y))
 			throw new SolutionNotFoundException("The goal car is not aligned with the exit.");
-		
+
+		//Breadth-first algorithm
+		HashSet<Situation> marked = new HashSet<>();
+		ArrayDeque<Situation> queue = new ArrayDeque<>();
+		marked.add(currSit);
+		queue.addLast(currSit);
+		while(queue.size() > 0) {
+			currSit = queue.removeFirst();
+			final int edgeOrigin = situations.get(currSit);
+			//For each useful movement in the current situation
+			for(Map.Entry<Integer, List<Situation.Movement>> movementsList : getUsefulMovements().entrySet()) {
+				for(Situation.Movement movement : movementsList.getValue()) {
+					//Copy the current situation and apply the movement
+					Situation resultingSituation = new Situation(currSit);
+					resultingSituation.moveCar(movementsList.getKey(), movement);
+					final int edgeDest = addSituation(resultingSituation);
+					linkSituations(edgeOrigin, edgeDest);
+					if(!marked.contains(resultingSituation)) {
+						marked.add(resultingSituation);
+						queue.addLast(resultingSituation);
+					}
+				}
+			}
+		}
 	}
 
 	private Map<Integer, List<Situation.Movement>> getUsefulMovements() {
@@ -43,6 +67,8 @@ public class Graph {
 	}
 
 	private int addSituation(Situation situation) {
+		if(situations.containsKey(situation))
+			return situations.get(situation);
 		final int index = situations.size();
 		situations.put(situation, index);
 		final int matrixIndex = addMatrixEntry();
