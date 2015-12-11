@@ -9,16 +9,23 @@ public class Graph {
 	private HashMap<Situation, Integer> situations;
 	private ArrayList<ArrayList<Boolean>> adjacencyMatrix;
 	private ArrayDeque<Integer> blockingCars;
+	private Situation currSit;
 
 	public Graph(Situation initialSituation) {
 		situations = new HashMap<Situation, Integer>();
 		adjacencyMatrix = new ArrayList<ArrayList<Boolean>>();
 		blockingCars = new ArrayDeque<Integer>();
 		addSituation(initialSituation);
+		currSit = initialSituation;
 	}
 
-	public void solve() {
-		//Amazing stuffs go here
+	public void solve() throws SolutionNotFoundException {
+		final int goal = Situation.getGoalCar();
+		final Situation.Orientation goalOrientation = currSit.getCarOrientation(goal);
+		final Point goalPos = currSit.getCarPositions(goal).get(0);
+		if((goalOrientation == Situation.Orientation.Vertical && goalPos.x != Situation.getExit().x)
+				|| (goalOrientation == Situation.Orientation.Horizontal && goalPos.y != Situation.getExit().y))
+			throw new SolutionNotFoundException("The goal car is not aligned with the exit.");
 	}
 
 	private int addSituation(Situation situation) {
