@@ -25,7 +25,7 @@ public class Graph {
 	public void solve() throws SolutionNotFoundException {
 		final int goal = Situation.getGoalCar();
 		final Situation.Orientation goalOrientation = currSit.getCarOrientation(goal);
-		final Point goalPos = Situation.getCarPositions(goal).get(0);
+		final Point goalPos = currSit.getCarPositions(goal).get(0);
 		final Point exitPos = Situation.getExit();
 		if((goalOrientation == Situation.Orientation.Vertical && goalPos.x != exitPos.x)
 				|| (goalOrientation == Situation.Orientation.Horizontal && goalPos.y != exitPos.y))
