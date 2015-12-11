@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.lang.IllegalArgumentException;
 
-public class Situation {
+public class Situation implements Cloneable {
 	public enum Movement {
 		Up(new Point(0, -1)),
 		Down(new Point(0, 1)),
@@ -28,18 +28,18 @@ public class Situation {
 
 	private final Point size;
 	private int[][] parking;
-	private List<Point> carsPositions;
-	private List<Orientation> carsOrientations;
+	private ArrayList<Point> carsPositions;
+	private ArrayList<Orientation> carsOrientations;
 	private static final int emptyCell = -1;
 	private static final int goalCell = 0;
 	private static Point exit;
 
 	public Situation(Point size) {
+		this.size = size;
 		this.carsPositions = new ArrayList<>();
 		this.carsPositions.add(getGoalCar(), new Point(-1, -1));
 		this.carsOrientations = new ArrayList<>();
 		this.carsOrientations.add(getGoalCar(), Orientation.Vertical);
-		this.size = size;
 		parking = new int[size.y][];
 		for(int i = 0; i < size.y; ++i) {
 			parking[i] = new int[size.x];
@@ -50,6 +50,20 @@ public class Situation {
 
 	public Situation(int width, int height) {
 		this(new Point(width, height));
+	}
+
+	/* Copy constructor.*/
+	public Situation(Situation other) {
+		this.size = new Point(other.getSize());
+		this.parking = new int[this.size.y][];
+		for(int i = 0; i < this.size.y; ++i)
+			this.parking[i] = other.parking[i].clone();
+		this.carsPositions = new ArrayList<Point>(other.carsPositions.size());
+		for(Point pos : other.carsPositions)
+			this.carsPositions.add(pos);
+		this.carsOrientations = new ArrayList<Orientation>(other.carsOrientations.size());
+		for(Orientation orientation : other.carsOrientations)
+			this.carsOrientations.add(orientation);
 	}
 
 	private void checkPositions(List<Point> positions) throws IllegalArgumentException {
@@ -89,7 +103,7 @@ public class Situation {
 		checkCarArgument(car);
 		Point pos = carsPositions.get(car);
 		Orientation orientation = carsOrientations.get(car);
-		ArrayList<Point> ret = new ArrayList<>();
+		List<Point> ret = new ArrayList<>();
 		if(orientation == Orientation.Vertical) {
 			for(int y = pos.y; isInParking(pos.x, y) && getCar(pos.x, y) == car; ++y)
 				ret.add(new Point(pos.x, y));
@@ -128,7 +142,7 @@ public class Situation {
 
 	public List<Movement> getPossibleMovements(int car) throws IndexOutOfBoundsException {
 		checkCarArgument(car);
-		ArrayList<Movement> result = new ArrayList<>();
+		List<Movement> result = new ArrayList<>();
 		final List<Point> pos = getCarPositions(car);
 		Point previousCell = new Point(pos.get(0)),
 		      nextCell = new Point(pos.get(pos.size()-1));
@@ -280,6 +294,14 @@ public class Situation {
 
 	public Point getSize() {
 		return size;
+	}
+
+	public int getFirstCar() {
+		return 0; //The minimum index in carsPositions
+	}
+
+	public int getPastTheLastCar() {
+		return carsPositions.size();
 	}
 }
 

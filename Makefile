@@ -9,7 +9,7 @@ clear:
 	clear
 
 build: clean
-	javac $(FILES)
+	javac $(FILES) -Xlint
 
 clean:
 	rm -f $(PACKAGE)/*.class

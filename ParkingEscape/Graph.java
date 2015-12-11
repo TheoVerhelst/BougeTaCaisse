@@ -1,20 +1,23 @@
 package ParkingEscape;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.ArrayList;
 import java.util.ArrayDeque;
+import java.util.List;
 import java.awt.Point;
 
 public class Graph {
 	private HashMap<Situation, Integer> situations;
 	private ArrayList<ArrayList<Boolean>> adjacencyMatrix;
-	private ArrayDeque<Integer> blockingCars;
+	private ArrayDeque<Integer> carsToMove;
 	private Situation currSit;
 
 	public Graph(Situation initialSituation) {
 		situations = new HashMap<Situation, Integer>();
 		adjacencyMatrix = new ArrayList<ArrayList<Boolean>>();
-		blockingCars = new ArrayDeque<Integer>();
+		carsToMove = new ArrayDeque<Integer>();
 		addSituation(initialSituation);
 		currSit = initialSituation;
 	}
@@ -22,10 +25,21 @@ public class Graph {
 	public void solve() throws SolutionNotFoundException {
 		final int goal = Situation.getGoalCar();
 		final Situation.Orientation goalOrientation = currSit.getCarOrientation(goal);
-		final Point goalPos = currSit.getCarPositions(goal).get(0);
-		if((goalOrientation == Situation.Orientation.Vertical && goalPos.x != Situation.getExit().x)
-				|| (goalOrientation == Situation.Orientation.Horizontal && goalPos.y != Situation.getExit().y))
+		final Point goalPos = Situation.getCarPositions(goal).get(0);
+		final Point exitPos = Situation.getExit();
+		if((goalOrientation == Situation.Orientation.Vertical && goalPos.x != exitPos.x)
+				|| (goalOrientation == Situation.Orientation.Horizontal && goalPos.y != exitPos.y))
 			throw new SolutionNotFoundException("The goal car is not aligned with the exit.");
+		
+	}
+
+	private Map<Integer, List<Situation.Movement>> getUsefulMovements() {
+		//Génération de tous les mouvements possibles <=> arbre entier des situations possibles
+		//C'est ici qu'un élagage intelligent est à écrire pour eviter un memory overhead
+		Map<Integer, List<Situation.Movement>> ret = new TreeMap<Integer, List<Situation.Movement>>();
+		for(int car = currSit.getFirstCar(); car != currSit.getPastTheLastCar(); ++car)
+			ret.put(car, currSit.getPossibleMovements(car));
+		return ret;
 	}
 
 	private int addSituation(Situation situation) {
