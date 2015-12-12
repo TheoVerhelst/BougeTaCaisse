@@ -12,44 +12,52 @@ import java.awt.Point;
 public class Graph {
 	public class Solution {
 		public Situation initialSituation, finalSituation;
-		Map<Integer, List<List<Point>>> moves;
+		Map<Integer, ArrayList<ArrayList<Point>>> moves;
+		int length;
 	}
 	private HashMap<Situation, Integer> situations;
 	private ArrayList<ArrayList<Boolean>> adjacencyMatrix;
 	private ArrayDeque<Integer> carsToMove;
-	private Situation currSit;
+	private Situation initialSituation;
 
 	public Graph(Situation initialSituation) {
-		situations = new HashMap<Situation, Integer>();
-		adjacencyMatrix = new ArrayList<ArrayList<Boolean>>();
-		carsToMove = new ArrayDeque<Integer>();
-		addSituation(initialSituation);
-		currSit = initialSituation;
+		this.situations = new HashMap<Situation, Integer>();
+		this.adjacencyMatrix = new ArrayList<ArrayList<Boolean>>();
+		this.carsToMove = new ArrayDeque<Integer>();
+		this.addSituation(initialSituation);
+		this.initialSituation = initialSituation;
 	}
 
 	public Solution solve() throws SolutionNotFoundException {
 		final int goal = Situation.getGoalCar();
-		final Situation.Orientation goalOrientation = currSit.getCarOrientation(goal);
-		final Point goalPos = currSit.getCarPositions(goal).get(0);
+		final Situation.Orientation goalOrientation = initialSituation.getCarOrientation(goal);
+		final Point goalPos = initialSituation.getCarPositions(goal).get(0);
 		final Point exitPos = Situation.getExit();
 		Solution ret = new Solution();
 
 		//Breadth-first algorithm
 		HashSet<Situation> marked = new HashSet<>();
 		ArrayDeque<Situation> queue = new ArrayDeque<>();
-		marked.add(currSit);
-		queue.addLast(currSit);
-		ret.initialSituation = currSit;
+		marked.add(initialSituation);
+		queue.addLast(initialSituation);
+		ret.initialSituation = initialSituation;
 		ret.moves = new HashMap<>();
 		while(queue.size() > 0) {
-			currSit = queue.removeFirst();
-			final int edgeOrigin = situations.get(currSit);
+			Situation currentSituation = queue.removeFirst();
+			final int edgeOrigin = situations.get(currentSituation);
 			//For each useful movement in the current situation
-			for(Map.Entry<Integer, List<Situation.Movement>> movementsList : getUsefulMovements().entrySet()) {
+			for(Map.Entry<Integer, List<Situation.Movement>> movementsList : getUsefulMovements(currentSituation).entrySet()) {
+				final int car = movementsList.getKey();
+				if(!ret.moves.containsKey(car)) {
+					ret.moves.put(car, new ArrayList<ArrayList<Point>>());
+					ret.moves.get(car).add(currentSituation.getCarPositions(car));
+				}
 				for(Situation.Movement movement : movementsList.getValue()) {
 					//Copy the current situation and apply the movement
-					Situation resultingSituation = new Situation(currSit);
-					resultingSituation.moveCar(movementsList.getKey(), movement);
+					Situation resultingSituation = new Situation(currentSituation);
+					resultingSituation.moveCar(car, movement);
+					ret.moves.get(car).add(resultingSituation.getCarPositions(car));
+					++ret.length;
 					if(isTargetSituation(resultingSituation)) {
 						ret.finalSituation = resultingSituation;
 						return ret;
@@ -66,12 +74,12 @@ public class Graph {
 		return ret;
 	}
 
-	private Map<Integer, List<Situation.Movement>> getUsefulMovements() {
+	private Map<Integer, List<Situation.Movement>> getUsefulMovements(Situation situation) {
 		//Génération de tous les mouvements possibles <=> arbre entier des situations possibles
 		//C'est ici qu'un élagage intelligent est à écrire pour eviter un memory overhead
 		Map<Integer, List<Situation.Movement>> ret = new TreeMap<Integer, List<Situation.Movement>>();
-		for(int car = currSit.getFirstCar(); car != currSit.getPastTheLastCar(); ++car)
-			ret.put(car, currSit.getPossibleMovements(car));
+		for(int car = situation.getFirstCar(); car != situation.getPastTheLastCar(); ++car)
+			ret.put(car, situation.getPossibleMovements(car));
 		return ret;
 	}
 

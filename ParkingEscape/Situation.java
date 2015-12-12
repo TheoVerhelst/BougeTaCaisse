@@ -99,11 +99,11 @@ public class Situation implements Cloneable {
 		return newCar;
 	}
 	
-	public List<Point> getCarPositions(int car) throws IndexOutOfBoundsException {
+	public ArrayList<Point> getCarPositions(int car) throws IndexOutOfBoundsException {
 		checkCarArgument(car);
 		Point pos = carsPositions.get(car);
 		Orientation orientation = carsOrientations.get(car);
-		List<Point> ret = new ArrayList<>();
+		ArrayList<Point> ret = new ArrayList<Point>();
 		if(orientation == Orientation.Vertical) {
 			for(int y = pos.y; isInParking(pos.x, y) && getCar(pos.x, y) == car; ++y)
 				ret.add(new Point(pos.x, y));

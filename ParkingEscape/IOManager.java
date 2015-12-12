@@ -25,8 +25,8 @@ public class IOManager {
 				else
 					ret.addCar(parseListPoint(content.get(i)));
 			}
-			//TODO Je mettrais plutot une ParseException ici, comme pour l'exit
-			assert ret.getCarPositions(Situation.getGoalCar()).size() != 0 : "No goal car found in Parking";
+			if(ret.getCarPositions(Situation.getGoalCar()).size() == 0)
+				throw new ParseException("No goal car was found.", 0);
 			if(ret.getCarOrientation(Situation.getGoalCar()) == Situation.Orientation.Horizontal) {
 				final int GoalY = ret.getCarPositions(Situation.getGoalCar()).get(0).y;
 				String line = content.get(2*(1+GoalY));
@@ -53,14 +53,15 @@ public class IOManager {
 
 	public static void writeSolution(Graph.Solution solution, String outputFile1, String outputFile2) {
 		System.out.println("Situation finale: \n" + solution.finalSituation);
-		System.out.println("Une façon de sortir du parking en " + solution.moves.size() + " mouvements a été trouvée.\n");
-		for(Map.Entry<Integer, List<List<Point>>> moves : solution.moves.entrySet()) {
+		System.out.println("Une façon de sortir du parking en " + solution.length + " mouvements a été trouvée.\n");
+		for(Map.Entry<Integer, ArrayList<ArrayList<Point>>> moves : solution.moves.entrySet()) {
 			System.out.println("Déplacements car" + moves.getKey() + ":");
 			for(int i = 0; i < moves.getValue().size(); ++i) {
 				System.out.print(listAsString(moves.getValue().get(i)));
 				if(i < moves.getValue().size() - 1)
 					System.out.print(" -> ");
 			}
+			System.out.println();
 		}
 	}
 
