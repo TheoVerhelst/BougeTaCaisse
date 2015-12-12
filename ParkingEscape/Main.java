@@ -12,12 +12,13 @@ public class Main {
 		if(args.length != 1) {
 			System.out.println("Usage : java ParkingEscape.Main FILE");
 		} else {
-			testIO();
-			testSituation();
+			//testIO();
+			//testSituation();
 			try {
-				Graph g = new Graph(IOManager.createSituation(args[0]));
+				new Graph(IOManager.createSituation(args[0])).solve();
 			} catch(Exception e) {
-				System.out.println("Exception : " + e);
+				System.out.println("Exception when solving:");
+				e.printStackTrace();
 			}
 		}
 	}

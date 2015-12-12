@@ -1,18 +1,19 @@
 PACKAGE=ParkingEscape
-FILES=$(PACKAGE)/*.java
+JAVAFILES=$(wildcard $(PACKAGE)/*.java)
+CLASSFILES=$(JAVAFILES:.java=.class)
 MAINCLASS=Main
 TESTFILE=Parking.txt
 
-all: clear build
+all: clear test
 
 clear:
 	clear
 
-build: clean
-	javac $(FILES) -Xlint
+$(CLASSFILES):%.class: %.java
+	javac $< -Xlint
 
 clean:
-	rm -f $(PACKAGE)/*.class
+	rm -f $(CLASSFILES)
 
-test:
+test: $(CLASSFILES)
 	java $(PACKAGE).$(MAINCLASS) $(TESTFILE)

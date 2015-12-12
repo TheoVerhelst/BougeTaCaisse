@@ -37,6 +37,7 @@ public class Graph {
 		ArrayDeque<Situation> queue = new ArrayDeque<>();
 		marked.add(currSit);
 		queue.addLast(currSit);
+		System.out.println("INITIAL: \n" + currSit);
 		while(queue.size() > 0) {
 			currSit = queue.removeFirst();
 			final int edgeOrigin = situations.get(currSit);
@@ -46,6 +47,10 @@ public class Graph {
 					//Copy the current situation and apply the movement
 					Situation resultingSituation = new Situation(currSit);
 					resultingSituation.moveCar(movementsList.getKey(), movement);
+					if(isTargetSituation(resultingSituation)) {
+						System.out.println("SOL FOUND: \n" + resultingSituation);
+						return;
+					}
 					final int edgeDest = addSituation(resultingSituation);
 					linkSituations(edgeOrigin, edgeDest);
 					if(!marked.contains(resultingSituation)) {
@@ -83,12 +88,12 @@ public class Graph {
 			if(situation.getCarOrientation(goal) == Situation.Orientation.Horizontal) {
 				if(goalPos.y != exitPos.y)
 					return false;
-				if(Math.abs(goalPos.x - exitPos.x) == 1)
+				if(goalPos.x == exitPos.x)
 					return true;
 			} else {
 				if(goalPos.x != exitPos.x)
 					return false;
-				if(Math.abs(goalPos.y - exitPos.y) == 1)
+				if(goalPos.y == exitPos.y)
 					return true;
 			}
 		}
