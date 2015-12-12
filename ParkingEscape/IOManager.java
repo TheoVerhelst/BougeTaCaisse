@@ -2,6 +2,7 @@ package ParkingEscape;
 
 import java.io.*;
 import java.util.List;
+import java.util.Map;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -24,6 +25,7 @@ public class IOManager {
 				else
 					ret.addCar(parseListPoint(content.get(i)));
 			}
+			//TODO Je mettrais plutot une ParseException ici, comme pour l'exit
 			assert ret.getCarPositions(Situation.getGoalCar()).size() != 0 : "No goal car found in Parking";
 			if(ret.getCarOrientation(Situation.getGoalCar()) == Situation.Orientation.Horizontal) {
 				final int GoalY = ret.getCarPositions(Situation.getGoalCar()).get(0).y;
@@ -49,6 +51,30 @@ public class IOManager {
 		return ret;
     }
 
+	public static void writeSolution(Graph.Solution solution, String outputFile1, String outputFile2) {
+		System.out.println("Situation finale: \n" + solution.finalSituation);
+		System.out.println("Une façon de sortir du parking en " + solution.moves.size() + " mouvements a été trouvée.\n");
+		for(Map.Entry<Integer, List<List<Point>>> moves : solution.moves.entrySet()) {
+			System.out.println("Déplacements car" + moves.getKey() + ":");
+			for(int i = 0; i < moves.getValue().size(); ++i) {
+				System.out.print(listAsString(moves.getValue().get(i)));
+				if(i < moves.getValue().size() - 1)
+					System.out.print(" -> ");
+			}
+		}
+	}
+
+	public static List<String> readFile(String path) throws FileNotFoundException, IOException {
+		String line;
+		List<String> content = new ArrayList<>();
+		InputStream iStream = new FileInputStream(path);
+		BufferedReader buff = new BufferedReader(new InputStreamReader(iStream));
+		while((line = buff.readLine()) != null)
+			content.add(line);
+		buff.close();
+		return content;
+	}
+
 	private static List<Point> parseListPoint(String listAsString) throws ParseException {
 		List<Point> ret = new ArrayList<>();
 		//Get only the bracket-list after the semicolon
@@ -63,14 +89,14 @@ public class IOManager {
 		return ret;
 	}
 
-	public static List<String> readFile(String path) throws FileNotFoundException, IOException {
-		String line;
-		List<String> content = new ArrayList<>();
-		InputStream iStream = new FileInputStream(path);
-		BufferedReader buff = new BufferedReader(new InputStreamReader(iStream));
-		while((line = buff.readLine()) != null)
-			content.add(line);
-		buff.close();
-		return content;
+	private static String listAsString(List<Point> points) {
+		String ret = "[";
+		for(int i = 0; i < points.size(); ++i) {
+			ret += "(" + points.get(i).x + ", " + points.get(i).y + ")";
+			if(i < points.size() - 1)
+				ret += ", ";
+		}
+		ret += "]";
+		return ret;
 	}
 }

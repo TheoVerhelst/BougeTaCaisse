@@ -10,6 +10,10 @@ import java.util.List;
 import java.awt.Point;
 
 public class Graph {
+	public class Solution {
+		public Situation initialSituation, finalSituation;
+		Map<Integer, List<List<Point>>> moves;
+	}
 	private HashMap<Situation, Integer> situations;
 	private ArrayList<ArrayList<Boolean>> adjacencyMatrix;
 	private ArrayDeque<Integer> carsToMove;
@@ -23,21 +27,20 @@ public class Graph {
 		currSit = initialSituation;
 	}
 
-	public void solve() throws SolutionNotFoundException {
+	public Solution solve() throws SolutionNotFoundException {
 		final int goal = Situation.getGoalCar();
 		final Situation.Orientation goalOrientation = currSit.getCarOrientation(goal);
 		final Point goalPos = currSit.getCarPositions(goal).get(0);
 		final Point exitPos = Situation.getExit();
-		if((goalOrientation == Situation.Orientation.Vertical && goalPos.x != exitPos.x)
-				|| (goalOrientation == Situation.Orientation.Horizontal && goalPos.y != exitPos.y))
-			throw new SolutionNotFoundException("The goal car is not aligned with the exit.");
+		Solution ret = new Solution();
 
 		//Breadth-first algorithm
 		HashSet<Situation> marked = new HashSet<>();
 		ArrayDeque<Situation> queue = new ArrayDeque<>();
 		marked.add(currSit);
 		queue.addLast(currSit);
-		System.out.println("INITIAL: \n" + currSit);
+		ret.initialSituation = currSit;
+		ret.moves = new HashMap<>();
 		while(queue.size() > 0) {
 			currSit = queue.removeFirst();
 			final int edgeOrigin = situations.get(currSit);
@@ -48,8 +51,8 @@ public class Graph {
 					Situation resultingSituation = new Situation(currSit);
 					resultingSituation.moveCar(movementsList.getKey(), movement);
 					if(isTargetSituation(resultingSituation)) {
-						System.out.println("SOL FOUND: \n" + resultingSituation);
-						return;
+						ret.finalSituation = resultingSituation;
+						return ret;
 					}
 					final int edgeDest = addSituation(resultingSituation);
 					linkSituations(edgeOrigin, edgeDest);
@@ -60,6 +63,7 @@ public class Graph {
 				}
 			}
 		}
+		return ret;
 	}
 
 	private Map<Integer, List<Situation.Movement>> getUsefulMovements() {

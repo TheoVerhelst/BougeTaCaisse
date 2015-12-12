@@ -15,7 +15,10 @@ public class Main {
 			//testIO();
 			//testSituation();
 			try {
-				new Graph(IOManager.createSituation(args[0])).solve();
+				Graph g = new Graph(IOManager.createSituation(args[0]));
+				IOManager.writeSolution(g.solve(), "foo", "bar");
+			} catch(ParseException e) {
+				System.out.println("Impossible to find a solution: " + e);
 			} catch(Exception e) {
 				System.out.println("Exception when solving:");
 				e.printStackTrace();
