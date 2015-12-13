@@ -77,8 +77,6 @@ public class Graph {
 	}
 	
 	private Map<Integer, List<Situation.Movement>> getUsefulMovementsFor(int car, Situation.Movement movement, Situation situation) {
-		//Génération de tous les mouvements possibles <=> arbre entier des situations possibles
-		//C'est ici qu'un élagage intelligent est à écrire pour eviter un memory overhead
 		Map<Integer, List<Situation.Movement>> ret = new TreeMap<Integer, List<Situation.Movement>>();
 		final int blocking = situation.getBlockingCar(car, movement);
 		if(blocking == Situation.getEmptyCell()) {
@@ -87,8 +85,6 @@ public class Graph {
 			ret.put(car, moves);
 		} else {
 			List<Situation.Movement> possibleMoves = Situation.getMovementsFromOrientation(situation.getCarOrientation(blocking));
-			// List<Situation.Movement> possibleMoves = situation.getPossibleMovements(blocking);
-			System.out.println(possibleMoves);
 			for(Situation.Movement move : possibleMoves) {
 				for(Map.Entry<Integer, List<Situation.Movement>> moveList : getUsefulMovementsFor(blocking, move, situation).entrySet()) {
 					final int idx = moveList.getKey();
