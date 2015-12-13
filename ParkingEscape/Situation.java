@@ -304,5 +304,17 @@ public class Situation implements Cloneable {
 	public int getPastTheLastCar() {
 		return carsPositions.size();
 	}
+	
+	public static List<Situation.Movement> getMovementsFromOrientation(Orientation orientation) {
+		List<Situation.Movement> ret = new ArrayList<>();
+		if(orientation == Orientation.Horizontal) {
+			ret.add(Movement.Left);
+			ret.add(Movement.Right);
+		} else {
+			ret.add(Movement.Up);
+			ret.add(Movement.Down);
+		}
+		return ret;
+	}
 }
 
