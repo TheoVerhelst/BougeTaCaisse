@@ -12,13 +12,14 @@ import java.awt.Point;
 public class Graph {
 	public class Solution {
 		public Situation initialSituation, finalSituation;
-		Map<Integer, ArrayList<ArrayList<Point>>> moves;
-		int length;
+		public Map<Integer, ArrayList<ArrayList<Point>>> moves;
+		public int length;
 	}
 	private HashMap<Situation, Integer> situations;
 	private ArrayList<ArrayList<Boolean>> adjacencyMatrix;
 	private ArrayDeque<Integer> carsToMove;
 	private Situation initialSituation;
+	private final Situation.Orientation goalOrientation;
 
 	public Graph(Situation initialSituation) {
 		this.situations = new HashMap<Situation, Integer>();
@@ -26,11 +27,12 @@ public class Graph {
 		this.carsToMove = new ArrayDeque<Integer>();
 		this.addSituation(initialSituation);
 		this.initialSituation = initialSituation;
+		this.goalOrientation = initialSituation.getCarOrientation(Situation.getGoalCar());
 	}
 
 	public Solution solve() throws SolutionNotFoundException {
 		final int goal = Situation.getGoalCar();
-		final Situation.Orientation goalOrientation = initialSituation.getCarOrientation(goal);
+		// final Situation.Orientation goalOrientation = initialSituation.getCarOrientation(goal);
 		final Point goalPos = initialSituation.getCarPositions(goal).get(0);
 		final Point exitPos = Situation.getExit();
 		Solution ret = new Solution();
@@ -78,8 +80,23 @@ public class Graph {
 		//Génération de tous les mouvements possibles <=> arbre entier des situations possibles
 		//C'est ici qu'un élagage intelligent est à écrire pour eviter un memory overhead
 		Map<Integer, List<Situation.Movement>> ret = new TreeMap<Integer, List<Situation.Movement>>();
+		final int goal = Situation.getGoalCar();
+		Situation.Movement goalMovement;
+		if(goalOrientation == Situation.Orientation.Horizontal)
+			goalMovement = Situation.getExit().x < situation.getCarPositions(goal).get(0).x ? Situation.Movement.Left : Situation.Movement.Right;
+		else
+			goalMovement = Situation.getExit().y < situation.getCarPositions(goal).get(0).y ? Situation.Movement.Up : Situation.Movement.Down;
+		final int blocking = situation.getBlockingCar(goal, goalMovement);
+		if(blocking == Situation.getEmptyCell())
+			ret.put(goal, situation.getPossibleMovements(goal));
+		else
+			ret.put(blocking, situation.getPossibleMovements(blocking));/*
+		if(situation.getPossibleMovements(goal).contains(goalOrientation)) {
+			ret.put(goal, param);
+			return ret;
+		}
 		for(int car = situation.getFirstCar(); car != situation.getPastTheLastCar(); ++car)
-			ret.put(car, situation.getPossibleMovements(car));
+			ret.put(car, situation.getPossibleMovements(car));*/
 		return ret;
 	}
 
