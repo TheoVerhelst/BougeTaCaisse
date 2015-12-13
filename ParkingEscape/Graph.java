@@ -17,14 +17,12 @@ public class Graph {
 	}
 	private HashMap<Situation, Integer> situations;
 	private ArrayList<ArrayList<Boolean>> adjacencyMatrix;
-	private ArrayDeque<Integer> carsToMove;
 	private Situation initialSituation;
 	private final Situation.Orientation goalOrientation;
 
 	public Graph(Situation initialSituation) {
 		this.situations = new HashMap<Situation, Integer>();
 		this.adjacencyMatrix = new ArrayList<ArrayList<Boolean>>();
-		this.carsToMove = new ArrayDeque<Integer>();
 		this.addSituation(initialSituation);
 		this.initialSituation = initialSituation;
 		this.goalOrientation = initialSituation.getCarOrientation(Situation.getGoalCar());
@@ -32,7 +30,6 @@ public class Graph {
 
 	public Solution solve() throws SolutionNotFoundException {
 		final int goal = Situation.getGoalCar();
-		// final Situation.Orientation goalOrientation = initialSituation.getCarOrientation(goal);
 		final Point goalPos = initialSituation.getCarPositions(goal).get(0);
 		final Point exitPos = Situation.getExit();
 		Solution ret = new Solution();

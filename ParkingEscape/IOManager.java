@@ -27,29 +27,34 @@ public class IOManager {
 			}
 			if(ret.getCarPositions(Situation.getGoalCar()).size() == 0)
 				throw new ParseException("No goal car was found.", 0);
-			if(ret.getCarOrientation(Situation.getGoalCar()) == Situation.Orientation.Horizontal) {
-				final int GoalY = ret.getCarPositions(Situation.getGoalCar()).get(0).y;
-				String line = content.get(2*(1+GoalY));
-				if(line.charAt(0) == ' ')
-					Situation.setExit(0, GoalY);
-				else if(line.charAt(line.length()-1) == ' ')
-					Situation.setExit(x-1, GoalY);
-				else
-					throw new ParseException("No valid exit was found.", 0);
-			} else {
-				int GoalX = ret.getCarPositions(Situation.getGoalCar()).get(0).x;
-				if(content.get(1).substring(1 + 4*GoalX, 4*(GoalX+1)) == "   ")
-					Situation.setExit(GoalX, 0);
-				else if(content.get(1+2*y).substring(1 + 4*GoalX, 4*(GoalX+1)) == "   ")
-					Situation.setExit(GoalX, y-1);
-				else
-					throw new ParseException("No valid exit was found.", 0);
-			}
+			placeExit(ret, content);
 		} catch(IndexOutOfBoundsException e) {
 			throw new ParseException("Unable to parse correctly: incorrect file format.", 0);
 		}
 		return ret;
     }
+
+	private static void placeExit(Situation situation, List<String> fileContent) throws ParseException {
+		final int goal = Situation.getGoalCar();
+		if(situation.getCarOrientation(goal) == Situation.Orientation.Horizontal) {
+			final int GoalY = situation.getCarPositions(goal).get(0).y;
+			String line = fileContent.get(2*(1+GoalY));
+			if(line.charAt(0) == ' ')
+				Situation.setExit(0, GoalY);
+			else if(line.charAt(line.length()-1) == ' ')
+				Situation.setExit(situation.getWidth()-1, GoalY);
+			else
+				throw new ParseException("No valid exit was found.", 0);
+		} else {
+			int GoalX = situation.getCarPositions(goal).get(0).x;
+			if(fileContent.get(1).substring(1 + 4*GoalX, 4*(GoalX+1)) == "   ")
+				Situation.setExit(GoalX, 0);
+			else if(fileContent.get(1+2*situation.getHeight()).substring(1 + 4*GoalX, 4*(GoalX+1)) == "   ")
+				Situation.setExit(GoalX, situation.getHeight()-1);
+			else
+				throw new ParseException("No valid exit was found.", 0);
+		}
+	}
 
 	public static void writeSolution(Graph.Solution solution, String outputFile1, String outputFile2) {
 		System.out.println("Situation finale: \n" + solution.finalSituation);

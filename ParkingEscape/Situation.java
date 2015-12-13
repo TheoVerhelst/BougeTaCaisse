@@ -310,5 +310,13 @@ public class Situation implements Cloneable {
 		}
 		return ret;
 	}
+
+	public int getWidth() {
+		return size.x;
+	}
+
+	public int getHeight() {
+		return size.y;
+	}
 }
 
