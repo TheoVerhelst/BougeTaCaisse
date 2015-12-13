@@ -73,9 +73,8 @@ public class Situation implements Cloneable {
 			throw new IllegalArgumentException("Cars must be at least 2 units long.");
 		for(int i = 0; i < positions.size(); ++i) {
 			Point pos = positions.get(i);
-			if(!isCellEmpty(pos)) {
+			if(!isCellEmpty(pos))
 				throw new IllegalArgumentException("There is already a car at specified position.");
-			}
 			if(i > 0) {
 				Point difference = positions.get(i - 1);
 				if(Math.abs(difference.x-pos.x) + Math.abs(difference.y-pos.y) != 1)
@@ -208,7 +207,7 @@ public class Situation implements Cloneable {
 	public int setGoalPositions(List<Point> positions) throws IllegalArgumentException {
 		checkPositions(positions);
 		setCarPositions(getGoalCar(), positions);
-		carsPositions.set(0, positions.get(0));
+		carsPositions.set(getGoalCar(), positions.get(0));
 		carsOrientations.set(getGoalCar(), positions.get(0).x - positions.get(1).x == 0 ? Orientation.Vertical : Orientation.Horizontal);
 		return getGoalCar();
 	}
@@ -274,13 +273,8 @@ public class Situation implements Cloneable {
 			res += "--+";
 		for(int i = 0; i < size.y; ++i) {
 			res += "\n|";
-			for(int j = 0; j < size.x; ++j) {
-				if(!isCellEmpty(j, i))
-					res += String.format("%2d", getCar(j, i));
-				else
-					res += "  ";
-				res += "|";
-			}
+			for(int j = 0; j < size.x; ++j)
+				res += (isCellEmpty(j, i) ? "  " : String.format("%2d", getCar(j, i))) + "|";
 			res += "\n+";
 			for(int j = 0; j < size.x; ++j)
 				res += "--+";

@@ -84,8 +84,7 @@ public class Graph {
 			moves.add(movement);
 			ret.put(car, moves);
 		} else {
-			List<Situation.Movement> possibleMoves = Situation.getMovementsFromOrientation(situation.getCarOrientation(blocking));
-			for(Situation.Movement move : possibleMoves) {
+			for(Situation.Movement move : Situation.getMovementsFromOrientation(situation.getCarOrientation(blocking))) {
 				for(Map.Entry<Integer, List<Situation.Movement>> moveList : getUsefulMovementsFor(blocking, move, situation).entrySet()) {
 					final int idx = moveList.getKey();
 					if(ret.containsKey(idx))
