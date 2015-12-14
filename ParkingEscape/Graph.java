@@ -83,14 +83,23 @@ public class Graph {
 			moves.add(movement);
 			ret.put(car, moves);
 		} else {
-			for(Situation.Movement move : Situation.getMovementsFromOrientation(situation.getCarOrientation(blocking))) {
-				for(Map.Entry<Integer, List<Situation.Movement>> moveList : getUsefulMovementsFor(blocking, move, situation).entrySet()) {
-					final int idx = moveList.getKey();
-					if(ret.containsKey(idx))
-						ret.get(idx).addAll(moveList.getValue());
-					else
-						ret.put(idx, moveList.getValue());
-				}
+			List<Situation.Movement> possMoves = Situation.getMovementsFromOrientation(situation.getCarOrientation(blocking));
+			Map<Integer, List<Situation.Movement>> mvListsA = getUsefulMovementsFor(blocking, possMoves.get(0), situation);
+			Map<Integer, List<Situation.Movement>> mvListsB = getUsefulMovementsFor(blocking, possMoves.get(1), situation);
+
+			for(Map.Entry<Integer, List<Situation.Movement>> moveList : mvListsA.entrySet()) {
+				final int idx = moveList.getKey();
+				if(ret.containsKey(idx))
+					ret.get(idx).addAll(moveList.getValue());
+				else
+					ret.put(idx, moveList.getValue());
+			}
+			for(Map.Entry<Integer, List<Situation.Movement>> moveList : mvListsB.entrySet()) {
+				final int idx = moveList.getKey();
+				if(ret.containsKey(idx))
+					ret.get(idx).addAll(moveList.getValue());
+				else
+					ret.put(idx, moveList.getValue());
 			}
 		}
 		return ret;
