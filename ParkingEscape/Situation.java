@@ -57,10 +57,10 @@ public class Situation implements Cloneable {
 		this.parking = new int[this.size.y][];
 		for(int i = 0; i < this.size.y; ++i)
 			this.parking[i] = other.parking[i].clone();
-		this.carsPositions = new ArrayList<Point>(other.carsPositions.size());
+		this.carsPositions = new ArrayList<>(other.carsPositions.size());
 		for(Point pos : other.carsPositions)
 			this.carsPositions.add(new Point(pos));
-		this.carsOrientations = new ArrayList<Orientation>(other.carsOrientations.size());
+		this.carsOrientations = new ArrayList<>(other.carsOrientations.size());
 		for(Orientation orientation : other.carsOrientations)
 			this.carsOrientations.add(orientation);
 	}
@@ -79,7 +79,7 @@ public class Situation implements Cloneable {
 		checkCarArgument(car);
 		Point pos = carsPositions.get(car);
 		Orientation orientation = carsOrientations.get(car);
-		ArrayList<Point> ret = new ArrayList<Point>();
+		ArrayList<Point> ret = new ArrayList<>();
 		if(orientation == Orientation.Vertical) {
 			for(int y = pos.y; isInParking(pos.x, y) && getCar(pos.x, y) == car; ++y)
 				ret.add(new Point(pos.x, y));

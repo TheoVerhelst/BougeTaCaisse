@@ -86,6 +86,10 @@ public class IOManager {
 		return content;
 	}
 
+	public static void writeFile(String path, List<String> content) throws IOException {
+
+	}
+
 	private static List<Point> parseListPoint(String listAsString) throws ParseException {
 		List<Point> ret = new ArrayList<>();
 		//Get only the bracket-list after the semicolon

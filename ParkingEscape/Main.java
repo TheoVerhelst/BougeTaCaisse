@@ -9,14 +9,14 @@ import java.text.ParseException;
 
 public class Main {
 	public static void main(String[] args) {
-		if(args.length != 1) {
-			System.out.println("Usage : java ParkingEscape.Main FILE");
+		if(args.length != 3) {
+			System.out.println("Usage : java ParkingEscape.Main IN OUT1 OUT2");
 		} else {
 			//testIO();
 			//testSituation();
 			try {
 				Graph g = new Graph(IOManager.createSituation(args[0]));
-				IOManager.writeSolution(g.solve(), "foo", "bar");
+				IOManager.writeSolution(g.solve(), args[1], args[2]);
 			} catch(ParseException e) {
 				System.out.println("Impossible to find a solution: " + e);
 			} catch(Exception e) {

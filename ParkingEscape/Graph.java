@@ -76,7 +76,7 @@ public class Graph {
 	}
 	
 	private Map<Integer, List<Situation.Movement>> getUsefulMovementsFor(int car, Situation.Movement movement, Situation situation) {
-		Map<Integer, List<Situation.Movement>> ret = new TreeMap<Integer, List<Situation.Movement>>();
+		Map<Integer, List<Situation.Movement>> ret = new TreeMap<>();
 		final int blocking = situation.getBlockingCar(car, movement);
 		if(blocking == Situation.getEmptyCell()) {
 			ArrayList<Situation.Movement> moves = new ArrayList<>(1);
@@ -167,3 +167,4 @@ public class Graph {
 		adjacencyMatrix.get(i).set(j, true);
 	}
 }
+
