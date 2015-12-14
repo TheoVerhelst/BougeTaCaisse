@@ -35,13 +35,11 @@ public class Graph {
 
 		//Breadth-first algorithm
 		Solution ret = new Solution();
-		HashSet<Situation> marked = new HashSet<>();
 		ArrayDeque<Situation> queue = new ArrayDeque<>();
 		ArrayList<Integer> previous = new ArrayList<>();
 		ArrayList<Situation.Movement> carsMovements = new ArrayList<>();
 		ArrayList<Integer> carsMoved = new ArrayList<>();
 
-		marked.add(initialSituation);
 		queue.addLast(initialSituation);
 		ret.initialSituation = initialSituation;
 		ret.moves = new TreeMap<>();
@@ -55,6 +53,8 @@ public class Graph {
 					//Copy the current situation and apply the movement
 					Situation resultingSituation = new Situation(currentSituation);
 					resultingSituation.moveCar(car, movement);
+					if(!situations.containsKey(resultingSituation))
+						queue.addLast(resultingSituation);
 					final int resultingSituationIndex = addSituation(resultingSituation);
 					while(previous.size() <= resultingSituationIndex) {
 						previous.add(null);
@@ -68,10 +68,6 @@ public class Graph {
 						ret.finalSituation = resultingSituation;
 						fillSolution(ret, previous, carsMovements, carsMoved);
 						return ret;
-					}
-					if(!marked.contains(resultingSituation)) {
-						marked.add(resultingSituation);
-						queue.addLast(resultingSituation);
 					}
 				}
 			}
