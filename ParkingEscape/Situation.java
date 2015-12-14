@@ -3,7 +3,6 @@ package ParkingEscape;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
-import java.lang.IllegalArgumentException;
 
 public class Situation implements Cloneable {
 	public enum Movement {
@@ -54,7 +53,7 @@ public class Situation implements Cloneable {
 
 	/* Copy constructor.*/
 	public Situation(Situation other) {
-		this.size = new Point(other.getSize());
+		this.size = new Point(other.size);
 		this.parking = new int[this.size.y][];
 		for(int i = 0; i < this.size.y; ++i)
 			this.parking[i] = other.parking[i].clone();
@@ -64,28 +63,6 @@ public class Situation implements Cloneable {
 		this.carsOrientations = new ArrayList<Orientation>(other.carsOrientations.size());
 		for(Orientation orientation : other.carsOrientations)
 			this.carsOrientations.add(orientation);
-	}
-
-	private void checkPositions(List<Point> positions) throws IllegalArgumentException {
-		//Verify that there is not another car at specified positions
-		//and that positions are adjacent.
-		if(positions.size() < 2)
-			throw new IllegalArgumentException("Cars must be at least 2 units long.");
-		for(int i = 0; i < positions.size(); ++i) {
-			Point pos = positions.get(i);
-			if(!isCellEmpty(pos))
-				throw new IllegalArgumentException("There is already a car at specified position.");
-			if(i > 0) {
-				Point difference = positions.get(i - 1);
-				if(Math.abs(difference.x-pos.x) + Math.abs(difference.y-pos.y) != 1)
-					throw new IllegalArgumentException("Points specified are not adjacent.");
-			}
-		}
-	}
-
-	private void setCarPositions(int car, List<Point> positions) {
-		for(Point pos : positions)
-			setCar(car, pos);
 	}
 
 	public int addCar(List<Point> positions) throws IllegalArgumentException {
@@ -187,15 +164,6 @@ public class Situation implements Cloneable {
 		return parking[y][x];
 	}
 
-	private void setCar(int car, Point position) {
-		setCar(car, position.x, position.y);
-	}
-
-	private void setCar(int car, int x, int y) {
-		assert isInParking(x, y) : "Given position is not in parking: (" + x + ", " + y + ").";
-		parking[y][x] = car;
-	}
-
 	public static int getGoalCar() {
 		return goalCell;
 	}
@@ -245,27 +213,6 @@ public class Situation implements Cloneable {
 		return result;
 	}
 
-	private boolean isCellEmpty(Point cell) {
-		return isCellEmpty(cell.x, cell.y);
-	}
-
-	private boolean isCellEmpty(int x, int y) {
-		return getCar(x, y) == getEmptyCell();
-	}
-
-	private boolean isInParking(Point cell) {
-		return isInParking(cell.x, cell.y);
-	}
-
-	private boolean isInParking(int x, int y) {
-		return 0 <= x && x < this.size.x && 0 <= y && y < this.size.y;
-	}
-
-	private void checkCarArgument(int car) throws IndexOutOfBoundsException {
-		if(car >= carsPositions.size())
-			throw new IndexOutOfBoundsException("The specified car does not exist.");
-	}
-
 	@Override
 	public String toString() {
 		String res = new String("+");
@@ -287,18 +234,6 @@ public class Situation implements Cloneable {
 		return this.carsOrientations.get(car);
 	}
 
-	public Point getSize() {
-		return size;
-	}
-
-	public int getFirstCar() {
-		return 0; //The minimum index in carsPositions
-	}
-
-	public int getPastTheLastCar() {
-		return carsPositions.size();
-	}
-	
 	public static List<Situation.Movement> getMovementsFromOrientation(Orientation orientation) {
 		List<Situation.Movement> ret = new ArrayList<>();
 		if(orientation == Orientation.Horizontal) {
@@ -317,6 +252,58 @@ public class Situation implements Cloneable {
 
 	public int getHeight() {
 		return size.y;
+	}
+
+	private boolean isCellEmpty(Point cell) {
+		return isCellEmpty(cell.x, cell.y);
+	}
+
+	private boolean isCellEmpty(int x, int y) {
+		return getCar(x, y) == getEmptyCell();
+	}
+
+	private boolean isInParking(Point cell) {
+		return isInParking(cell.x, cell.y);
+	}
+
+	private boolean isInParking(int x, int y) {
+		return 0 <= x && x < this.size.x && 0 <= y && y < this.size.y;
+	}
+
+	private void checkCarArgument(int car) throws IndexOutOfBoundsException {
+		if(car >= carsPositions.size())
+			throw new IndexOutOfBoundsException("The specified car does not exist.");
+	}
+
+	private void checkPositions(List<Point> positions) throws IllegalArgumentException {
+		//Verify that there is not another car at specified positions
+		//and that positions are adjacent.
+		if(positions.size() < 2)
+			throw new IllegalArgumentException("Cars must be at least 2 units long.");
+		for(int i = 0; i < positions.size(); ++i) {
+			Point pos = positions.get(i);
+			if(!isCellEmpty(pos))
+				throw new IllegalArgumentException("There is already a car at specified position.");
+			if(i > 0) {
+				Point difference = positions.get(i - 1);
+				if(Math.abs(difference.x-pos.x) + Math.abs(difference.y-pos.y) != 1)
+					throw new IllegalArgumentException("Points specified are not adjacent.");
+			}
+		}
+	}
+
+	private void setCarPositions(int car, List<Point> positions) {
+		for(Point pos : positions)
+			setCar(car, pos);
+	}
+
+	private void setCar(int car, Point position) {
+		setCar(car, position.x, position.y);
+	}
+
+	private void setCar(int car, int x, int y) {
+		assert isInParking(x, y) : "Given position is not in parking: (" + x + ", " + y + ").";
+		parking[y][x] = car;
 	}
 }
 
