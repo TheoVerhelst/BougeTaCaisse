@@ -37,7 +37,7 @@ public class Graph {
 		Solution ret = new Solution();
 		HashSet<Situation> marked = new HashSet<>();
 		ArrayDeque<Situation> queue = new ArrayDeque<>();
-		ArrayList<Integer> next = new ArrayList<>();
+		ArrayList<Integer> previous = new ArrayList<>();
 		ArrayList<Situation.Movement> carsMovements = new ArrayList<>();
 		ArrayList<Integer> carsMoved = new ArrayList<>();
 
@@ -48,11 +48,6 @@ public class Graph {
 		while(queue.size() > 0) {
 			final Situation currentSituation = queue.removeFirst();
 			final int currentSituationIndex = situations.get(currentSituation);
-			while(currentSituationIndex >= next.size()) {
-				next.add(null);
-				carsMovements.add(null);
-				carsMoved.add(null);
-			}
 			//For each useful movement in the current situation
 			for(Map.Entry<Integer, List<Situation.Movement>> movementsList : getUsefulMovements(currentSituation).entrySet()) {
 				final int car = movementsList.getKey();
@@ -61,12 +56,17 @@ public class Graph {
 					Situation resultingSituation = new Situation(currentSituation);
 					resultingSituation.moveCar(car, movement);
 					final int resultingSituationIndex = addSituation(resultingSituation);
-					next.set(currentSituationIndex, resultingSituationIndex);
-					carsMovements.set(currentSituationIndex, movement);
-					carsMoved.set(currentSituationIndex, car);
+					while(previous.size() <= resultingSituationIndex) {
+						previous.add(null);
+						carsMovements.add(null);
+						carsMoved.add(null);
+					}
+					previous.set(resultingSituationIndex, currentSituationIndex);
+					carsMovements.set(resultingSituationIndex, movement);
+					carsMoved.set(resultingSituationIndex, car);
 					if(isTargetSituation(resultingSituation)) {
 						ret.finalSituation = resultingSituation;
-						fillSolution(ret, next, carsMovements, carsMoved);
+						fillSolution(ret, previous, carsMovements, carsMoved);
 						return ret;
 					}
 					if(!marked.contains(resultingSituation)) {
@@ -110,17 +110,17 @@ public class Graph {
 		return getUsefulMovementsFor(Situation.getGoalCar(), goalMovement, situation);
 	}
 
-	private void fillSolution(Solution solution, ArrayList<Integer> next, ArrayList<Situation.Movement> carsMovements, ArrayList<Integer> carsMoved) {
-		int situationIndex = situations.get(solution.initialSituation);
-		final int finalSituationIndex = situations.get(solution.finalSituation);
-		while(situationIndex != finalSituationIndex) {
+	private void fillSolution(Solution solution, ArrayList<Integer> previous, ArrayList<Situation.Movement> carsMovements, ArrayList<Integer> carsMoved) {
+		int situationIndex = situations.get(solution.finalSituation);
+		final int initialSituationIndex = situations.get(solution.initialSituation);
+		while(situationIndex != initialSituationIndex) {
 			final int carMoved = carsMoved.get(situationIndex);
 			final Situation.Movement carMovement = carsMovements.get(situationIndex);
 			if(!solution.moves.containsKey(carMoved))
 				solution.moves.put(carMoved, new ArrayList<Situation.Movement>());
-			solution.moves.get(carMoved).add(carMovement);
+			solution.moves.get(carMoved).add(0, carMovement);
 			++solution.length;
-			situationIndex = next.get(situationIndex);
+			situationIndex = previous.get(situationIndex);
 		}
 	}
 
