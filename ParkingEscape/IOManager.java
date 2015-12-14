@@ -59,10 +59,15 @@ public class IOManager {
 	public static void writeSolution(Graph.Solution solution, String outputFile1, String outputFile2) {
 		System.out.println("Situation finale: \n" + solution.finalSituation);
 		System.out.println("Une façon de sortir du parking en " + solution.length + " mouvements a été trouvée.\n");
-		for(Map.Entry<Integer, ArrayList<ArrayList<Point>>> moves : solution.moves.entrySet()) {
+		for(Map.Entry<Integer, ArrayList<Situation.Movement>> moves : solution.moves.entrySet()) {
 			System.out.println("Déplacements car" + moves.getKey() + ":");
+			List<Point> carPositions = solution.initialSituation.getCarPositions(moves.getKey());
+			System.out.print(listAsString(carPositions) + " -> ");
 			for(int i = 0; i < moves.getValue().size(); ++i) {
-				System.out.print(listAsString(moves.getValue().get(i)));
+				Situation.Movement movement = moves.getValue().get(i);
+				for(Point position : carPositions)
+					position.translate(movement.getComposition().x, movement.getComposition().y);
+				System.out.print(listAsString(carPositions));
 				if(i < moves.getValue().size() - 1)
 					System.out.print(" -> ");
 			}

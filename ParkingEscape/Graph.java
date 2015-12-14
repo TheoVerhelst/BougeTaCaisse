@@ -12,7 +12,7 @@ import java.awt.Point;
 public class Graph {
 	public class Solution {
 		public Situation initialSituation, finalSituation;
-		public Map<Integer, ArrayList<ArrayList<Point>>> moves;
+		public Map<Integer, ArrayList<Situation.Movement>> moves;
 		public int length;
 	}
 	private HashMap<Situation, Integer> situations;
@@ -32,37 +32,43 @@ public class Graph {
 		final int goal = Situation.getGoalCar();
 		final Point goalPos = initialSituation.getCarPositions(goal).get(0);
 		final Point exitPos = Situation.getExit();
-		Solution ret = new Solution();
 
 		//Breadth-first algorithm
+		Solution ret = new Solution();
 		HashSet<Situation> marked = new HashSet<>();
 		ArrayDeque<Situation> queue = new ArrayDeque<>();
+		ArrayList<Integer> next = new ArrayList<>();
+		ArrayList<Situation.Movement> carsMovements = new ArrayList<>();
+		ArrayList<Integer> carsMoved = new ArrayList<>();
+
 		marked.add(initialSituation);
 		queue.addLast(initialSituation);
 		ret.initialSituation = initialSituation;
-		ret.moves = new HashMap<>();
+		ret.moves = new TreeMap<>();
 		while(queue.size() > 0) {
-			Situation currentSituation = queue.removeFirst();
-			final int edgeOrigin = situations.get(currentSituation);
+			final Situation currentSituation = queue.removeFirst();
+			final int currentSituationIndex = situations.get(currentSituation);
+			while(currentSituationIndex >= next.size()) {
+				next.add(null);
+				carsMovements.add(null);
+				carsMoved.add(null);
+			}
 			//For each useful movement in the current situation
 			for(Map.Entry<Integer, List<Situation.Movement>> movementsList : getUsefulMovements(currentSituation).entrySet()) {
 				final int car = movementsList.getKey();
-				if(!ret.moves.containsKey(car)) {
-					ret.moves.put(car, new ArrayList<ArrayList<Point>>());
-					ret.moves.get(car).add(currentSituation.getCarPositions(car));
-				}
 				for(Situation.Movement movement : movementsList.getValue()) {
 					//Copy the current situation and apply the movement
 					Situation resultingSituation = new Situation(currentSituation);
 					resultingSituation.moveCar(car, movement);
-					ret.moves.get(car).add(resultingSituation.getCarPositions(car));
-					++ret.length;
+					final int resultingSituationIndex = addSituation(resultingSituation);
+					next.set(currentSituationIndex, resultingSituationIndex);
+					carsMovements.set(currentSituationIndex, movement);
+					carsMoved.set(currentSituationIndex, car);
 					if(isTargetSituation(resultingSituation)) {
 						ret.finalSituation = resultingSituation;
+						fillSolution(ret, next, carsMovements, carsMoved);
 						return ret;
 					}
-					final int edgeDest = addSituation(resultingSituation);
-					linkSituations(edgeOrigin, edgeDest);
 					if(!marked.contains(resultingSituation)) {
 						marked.add(resultingSituation);
 						queue.addLast(resultingSituation);
@@ -102,6 +108,20 @@ public class Graph {
 		else
 			goalMovement = Situation.getExit().y < situation.getCarPositions(goal).get(0).y ? Situation.Movement.Up : Situation.Movement.Down;
 		return getUsefulMovementsFor(Situation.getGoalCar(), goalMovement, situation);
+	}
+
+	private void fillSolution(Solution solution, ArrayList<Integer> next, ArrayList<Situation.Movement> carsMovements, ArrayList<Integer> carsMoved) {
+		int situationIndex = situations.get(solution.initialSituation);
+		final int finalSituationIndex = situations.get(solution.finalSituation);
+		while(situationIndex != finalSituationIndex) {
+			final int carMoved = carsMoved.get(situationIndex);
+			final Situation.Movement carMovement = carsMovements.get(situationIndex);
+			if(!solution.moves.containsKey(carMoved))
+				solution.moves.put(carMoved, new ArrayList<Situation.Movement>());
+			solution.moves.get(carMoved).add(carMovement);
+			++solution.length;
+			situationIndex = next.get(situationIndex);
+		}
 	}
 
 	private int addSituation(Situation situation) {
@@ -149,6 +169,5 @@ public class Graph {
 	private void linkSituations(int i, int j) {
 		assert i < adjacencyMatrix.size() && j < adjacencyMatrix.size();
 		adjacencyMatrix.get(i).set(j, true);
-		adjacencyMatrix.get(j).set(i, true);
 	}
 }
