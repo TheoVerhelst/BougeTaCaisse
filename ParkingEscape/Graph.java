@@ -77,32 +77,36 @@ public class Graph {
 	
 	private Map<Integer, List<Situation.Movement>> getUsefulMovementsFor(int car, Situation.Movement movement, Situation situation) {
 		Map<Integer, List<Situation.Movement>> ret = new TreeMap<>();
-		final int blocking = situation.getBlockingCar(car, movement);
-		if(blocking == Situation.getEmptyCell()) {
-			ArrayList<Situation.Movement> moves = new ArrayList<>(1);
-			moves.add(movement);
-			ret.put(car, moves);
-		} else {
-			List<Situation.Movement> possMoves = Situation.getMovementsFromOrientation(situation.getCarOrientation(blocking));
-			Map<Integer, List<Situation.Movement>> mvListsA = getUsefulMovementsFor(blocking, possMoves.get(0), situation);
-			Map<Integer, List<Situation.Movement>> mvListsB = getUsefulMovementsFor(blocking, possMoves.get(1), situation);
-
-			for(Map.Entry<Integer, List<Situation.Movement>> moveList : mvListsA.entrySet()) {
-				final int idx = moveList.getKey();
-				if(ret.containsKey(idx))
-					ret.get(idx).addAll(moveList.getValue());
-				else
-					ret.put(idx, moveList.getValue());
+		ArrayDeque<Integer> cars = new ArrayDeque<>();
+		ArrayDeque<Situation.Movement> movements = new ArrayDeque<>();
+		// Stack<Integer> placeInRec = new Stack<>();
+		int blocking;
+		cars.addLast(car);
+		movements.addLast(movement);
+		while(cars.size() > 0) {
+			car = cars.removeFirst();
+			movement = movements.removeFirst();
+			// !situation.getPossibleMovements(car).contains(movement)
+			while((blocking = situation.getBlockingCar(car, movement)) != Situation.getEmptyCell()) {
+				List<Situation.Movement> theoreticalMoves = Situation.getMovementsFromOrientation(situation.getCarOrientation(blocking));
+				cars.addLast(blocking);
+				movements.addLast(theoreticalMoves.get(0));
+				car = blocking;
+				movement = theoreticalMoves.get(1);
 			}
-			for(Map.Entry<Integer, List<Situation.Movement>> moveList : mvListsB.entrySet()) {
-				final int idx = moveList.getKey();
-				if(ret.containsKey(idx))
-					ret.get(idx).addAll(moveList.getValue());
-				else
-					ret.put(idx, moveList.getValue());
-			}
+			if(!addEntrance(ret, car, movement)) // stuck
+				return new TreeMap<>();
 		}
 		return ret;
+	}
+	
+	private boolean addEntrance(Map<Integer, List<Situation.Movement>> map, int idx, Situation.Movement value) {
+		if(!map.containsKey(idx))
+			map.put(idx, new ArrayList<Situation.Movement>());
+		if(map.get(idx).contains(value))
+			return false;
+		map.get(idx).add(value);
+		return true;
 	}
 
 	private Map<Integer, List<Situation.Movement>> getUsefulMovements(Situation situation) {
