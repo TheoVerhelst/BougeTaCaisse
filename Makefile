@@ -19,3 +19,6 @@ clean:
 
 test: $(CLASSFILES)
 	java $(PACKAGE).$(MAINCLASS) $(TESTFILE) $(OUT1) $(OUT2)
+
+report:
+	make -C rapport/
