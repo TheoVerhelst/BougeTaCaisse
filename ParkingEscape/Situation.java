@@ -217,14 +217,14 @@ public class Situation implements Cloneable {
 	public String toString() {
 		String res = new String("+");
 		for(int i = 0; i < size.x; ++i)
-			res += "--+";
+			res += "---+";
 		for(int i = 0; i < size.y; ++i) {
 			res += System.lineSeparator() + "|";
 			for(int j = 0; j < size.x; ++j)
-				res += (isCellEmpty(j, i) ? "  " : String.format("%2d", getCar(j, i))) + "|";
+				res += (isCellEmpty(j, i) ? "   " : String.format("%3d", getCar(j, i))) + "|";
 			res += System.lineSeparator() + "+";
 			for(int j = 0; j < size.x; ++j)
-				res += "--+";
+				res += "---+";
 		}
 		return res;
 	}
