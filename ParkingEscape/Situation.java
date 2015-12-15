@@ -68,7 +68,7 @@ public class Situation implements Cloneable {
 	public int addCar(List<Point> positions) throws IllegalArgumentException {
 		checkPositions(positions);
 		//All is fine, we can add the car
-		int newCar = carsPositions.size();
+		final int newCar = carsPositions.size();
 		carsPositions.add(positions.get(0));
 		carsOrientations.add(positions.get(0).x - positions.get(1).x == 0 ? Orientation.Vertical : Orientation.Horizontal);
 		setCarPositions(newCar, positions);
@@ -77,8 +77,8 @@ public class Situation implements Cloneable {
 	
 	public ArrayList<Point> getCarPositions(int car) throws IndexOutOfBoundsException {
 		checkCarArgument(car);
-		Point pos = carsPositions.get(car);
-		Orientation orientation = carsOrientations.get(car);
+		final Point pos = carsPositions.get(car);
+		final Orientation orientation = carsOrientations.get(car);
 		ArrayList<Point> ret = new ArrayList<>();
 		if(orientation == Orientation.Vertical) {
 			for(int y = pos.y; isInParking(pos.x, y) && getCar(pos.x, y) == car; ++y)
@@ -151,7 +151,7 @@ public class Situation implements Cloneable {
 			for(Point carPosition : carPositions)
 				setCar(getEmptyCell(), carPosition);
 			for(Point carPosition : carPositions)
-				setCar(car, carPosition.x+ dx, carPosition.y + dy);
+				setCar(car, carPosition.x + dx, carPosition.y + dy);
 			carsPositions.get(car).translate(dx, dy);
 		}
 	}
@@ -193,7 +193,7 @@ public class Situation implements Cloneable {
 		if(other == this)
 			return true;
 		else if(other != null && other instanceof Situation) {
-			Situation otherSituation = (Situation) other;
+			final Situation otherSituation = (Situation) other;
 			for(int i = 0; i < size.x; ++i)
 				for(int j = 0; j < size.y; ++j)
 					if(getCar(i, j) != otherSituation.getCar(i, j))
@@ -281,7 +281,7 @@ public class Situation implements Cloneable {
 		if(positions.size() < 2)
 			throw new IllegalArgumentException("Cars must be at least 2 units long.");
 		for(int i = 0; i < positions.size(); ++i) {
-			Point pos = positions.get(i);
+			final Point pos = positions.get(i);
 			if(!isCellEmpty(pos))
 				throw new IllegalArgumentException("There is already a car at specified position.");
 			if(i > 0) {

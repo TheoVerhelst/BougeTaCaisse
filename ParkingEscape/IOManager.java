@@ -46,7 +46,7 @@ public class IOManager {
 			else
 				throw new ParseException("No valid exit was found.", 0);
 		} else {
-			int GoalX = situation.getCarPositions(goal).get(0).x;
+			final int GoalX = situation.getCarPositions(goal).get(0).x;
 			if(fileContent.get(1).substring(1 + 4*GoalX, 4*(GoalX+1)) == "   ")
 				Situation.setExit(GoalX, 0);
 			else if(fileContent.get(1+2*situation.getHeight()).substring(1 + 4*GoalX, 4*(GoalX+1)) == "   ")
@@ -61,7 +61,7 @@ public class IOManager {
 		System.out.println("Une façon de sortir du parking en " + solution.length + " mouvements a été trouvée.\n");
 		for(Map.Entry<Integer, ArrayList<Situation.Movement>> moves : solution.moves.entrySet()) {
 			System.out.println("Déplacements car" + moves.getKey() + ":");
-			List<Point> carPositions = solution.initialSituation.getCarPositions(moves.getKey());
+			final List<Point> carPositions = solution.initialSituation.getCarPositions(moves.getKey());
 			System.out.print(listAsString(carPositions) + " -> ");
 			for(int i = 0; i < moves.getValue().size(); ++i) {
 				Situation.Movement movement = moves.getValue().get(i);
@@ -87,7 +87,7 @@ public class IOManager {
 	}
 
 	public static void writeFile(String path, List<String> content) throws IOException {
-
+		// TODO
 	}
 
 	private static List<Point> parseListPoint(String listAsString) throws ParseException {
@@ -95,7 +95,7 @@ public class IOManager {
 		//Get only the bracket-list after the semicolon
 		listAsString = listAsString.split(":")[1].trim();
 		Pattern tuplesPattern = Pattern.compile("\\[\\((\\d+),\\s*(\\d+)\\)\\s*(?:,\\s*\\((\\d+),\\s*(\\d+)\\)\\s*)*\\]");
-		Matcher matches = tuplesPattern.matcher(listAsString);
+		final Matcher matches = tuplesPattern.matcher(listAsString);
 		if(!matches.matches() || matches.groupCount() % 2 != 0)
 			throw new ParseException("List of positions is badly written.", 0);
 		//The groupCount does not contains matches.group(0), which is the entire match, so i must start at 1

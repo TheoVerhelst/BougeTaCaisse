@@ -15,6 +15,7 @@ public class Graph {
 		public Map<Integer, ArrayList<Situation.Movement>> moves;
 		public int length;
 	}
+
 	private HashMap<Situation, Integer> situations;
 	private ArrayList<ArrayList<Boolean>> adjacencyMatrix;
 	private Situation initialSituation;
@@ -79,14 +80,12 @@ public class Graph {
 		Map<Integer, List<Situation.Movement>> ret = new TreeMap<>();
 		ArrayDeque<Integer> cars = new ArrayDeque<>();
 		ArrayDeque<Situation.Movement> movements = new ArrayDeque<>();
-		// Stack<Integer> placeInRec = new Stack<>();
 		int blocking;
 		cars.addLast(car);
 		movements.addLast(movement);
 		while(cars.size() > 0) {
 			car = cars.removeFirst();
 			movement = movements.removeFirst();
-			// !situation.getPossibleMovements(car).contains(movement)
 			while((blocking = situation.getBlockingCar(car, movement)) != Situation.getEmptyCell()) {
 				List<Situation.Movement> theoreticalMoves = Situation.getMovementsFromOrientation(situation.getCarOrientation(blocking));
 				cars.addLast(blocking);
@@ -100,7 +99,7 @@ public class Graph {
 		return ret;
 	}
 	
-	private boolean addEntrance(Map<Integer, List<Situation.Movement>> map, int idx, Situation.Movement value) {
+	private static boolean addEntrance(Map<Integer, List<Situation.Movement>> map, int idx, Situation.Movement value) {
 		if(!map.containsKey(idx))
 			map.put(idx, new ArrayList<Situation.Movement>());
 		if(map.get(idx).contains(value))
@@ -143,7 +142,7 @@ public class Graph {
 		return index;
 	}
 
-	private boolean isTargetSituation(Situation situation) {
+	private static boolean isTargetSituation(Situation situation) {
 		final int goal = Situation.getGoalCar();
 		final Point exitPos = Situation.getExit();
 		for(Point goalPos : situation.getCarPositions(goal)) {
