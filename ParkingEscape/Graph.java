@@ -115,13 +115,16 @@ public class Graph {
 			movement = movements.removeFirst();
 			while((blocking = situation.getBlockingCar(car, movement)) != Situation.getEmptyCell()) {
 				List<Situation.Movement> theoreticalMoves = Situation.getMovementsFromOrientation(situation.getCarOrientation(blocking));
+				//Je suis pas sûr du tout que ca soit le bon endroit pour l'exception, tu peux confirmer ?
+				if(cars.contains(blocking))
+					throw new SolutionNotFoundException("la voiture " + car + " est bloquée par des voitures qui la bloquent elle-même.");
 				cars.addLast(blocking);
 				movements.addLast(theoreticalMoves.get(0));
 				car = blocking;
 				movement = theoreticalMoves.get(1);
 			}
 			if(!addEntrance(ret, car, movement)) // stuck
-				throw new SolutionNotFoundException("la voiture " + car + " est bloquée par des voitures qui la bloquent elle-même.");
+				return new TreeMap<>();
 		}
 		return ret;
 	}
