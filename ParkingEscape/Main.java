@@ -37,7 +37,7 @@ public class Main {
 			System.out.println("Raw file:");
 			for(String line : fileContent)
 				System.out.println(line);
-			System.out.println("Resulting situation:\n" + IOManager.createSituation(filePath));
+			System.out.println("Resulting situation:" + System.lineSeparator() + IOManager.createSituation(filePath));
 		} catch(FileNotFoundException e) {
 			System.out.println("Given file does not exist: " + e);
 		} catch(IOException e) {
@@ -54,14 +54,14 @@ public class Main {
 		car.add(new Point(2, 3));
 		car.add(new Point(3, 3));
 		int carId = s.addCar(car);
-		System.out.println("addCar: " + car + ", Parking = \n" + s);
+		System.out.println("addCar: " + car + ", Parking =" + System.lineSeparator() + s);
 		List<Situation.Movement> mvs = s.getPossibleMovements(carId);
 		System.out.println("getPossibleMovements: [Left, Right] = " + mvs.toString());
 		ArrayList<Point> otherCar = new ArrayList<>();
 		otherCar.add(new Point(4, 3));
 		otherCar.add(new Point(4, 2));
 		int otherCarId = s.addCar(otherCar);
-		System.out.println("addCar: " + otherCar + ", Parking =\n" + s);
+		System.out.println("addCar: " + otherCar + ", Parking =" + System.lineSeparator() + s);
 		List<Situation.Movement> otherMvs = s.getPossibleMovements(otherCarId);
 		System.out.println("getPossibleMovements: [Up, Down] = " + otherMvs.toString());
 		mvs = s.getPossibleMovements(carId);
@@ -84,6 +84,6 @@ public class Main {
 		} catch(Exception e) {
 			System.out.println("\tFailed, as it should be.");
 		}
-		System.out.println("Parking =\n" + s);
+		System.out.println("Parking =" + System.lineSeparator() + s);
 	}
 }

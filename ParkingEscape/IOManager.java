@@ -61,6 +61,10 @@ public class IOManager {
 	}
 
 	public static void writeSolution(Graph.Solution solution, String outputFile1, String outputFile2) {
+		writeSolutionConsole(solution);
+	}
+
+	private static void writeSolutionConsole(Graph.Solution solution) {
 		System.out.println("Situation finale: \n" + solution.finalSituation);
 		System.out.println("Une façon de sortir du parking en " + solution.length + " mouvements a été trouvée.\n");
 		for(Map.Entry<Integer, ArrayList<Situation.Movement>> moves : solution.moves.entrySet()) {

@@ -219,14 +219,14 @@ public class Situation implements Cloneable {
 		for(int i = 0; i < size.x; ++i)
 			res += "--+";
 		for(int i = 0; i < size.y; ++i) {
-			res += "\n|";
+			res += System.lineSeparator() + "|";
 			for(int j = 0; j < size.x; ++j)
 				res += (isCellEmpty(j, i) ? "  " : String.format("%2d", getCar(j, i))) + "|";
-			res += "\n+";
+			res += System.lineSeparator() + "+";
 			for(int j = 0; j < size.x; ++j)
 				res += "--+";
 		}
-		return res += "\n";
+		return res += System.lineSeparator();
 	}
 	
 	public Orientation getCarOrientation(int car) {
