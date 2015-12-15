@@ -246,12 +246,24 @@ public class Situation implements Cloneable {
 		return ret;
 	}
 
+	public Point getSize() {
+		return new Point(size);
+	}
+
 	public int getWidth() {
 		return size.x;
 	}
 
 	public int getHeight() {
 		return size.y;
+	}
+
+	public int getFirstCar() {
+		return 0;
+	}
+
+	public int getCarCount() {
+		return carsPositions.size();
 	}
 
 	private boolean isCellEmpty(Point cell) {

@@ -65,6 +65,7 @@ public class IOManager {
 	public static void writeSolution(Graph.Solution solution, String outputFile1, String outputFile2) throws IOException {
 		writeSolutionOut1(solution, outputFile1);
 		writeSolutionOut2(solution, outputFile2);
+		writeSolutionConsole(solution);
 	}
 
 	private static void writeSolutionOut1(Graph.Solution solution, String outputFile1) throws IOException {
@@ -97,6 +98,54 @@ public class IOManager {
 		lines.add(formatSituation(solution.initialSituation));
 		lines.add("");
 		Files.write(Paths.get(outputFile2), lines, Charset.defaultCharset());
+	}
+
+	private static void writeSolutionConsole(Graph.Solution solution) {
+		final Point size = solution.initialSituation.getSize();
+		final int goal = Situation.getGoalCar();
+		final int carCount = solution.initialSituation.getCarCount();
+
+		System.out.println("Le parking a une dimension de " + size.x + " fois " + size.y);
+		System.out.println("Il contient 1 Goal car et " + (carCount - 1) + " autres voitures.");
+		System.out.println("La voiture Goal se trouve en position : " + listAsString(solution.initialSituation.getCarPositions(goal)));
+		for(int i = solution.initialSituation.getFirstCar(); i < carCount; ++i)
+			if(i != goal)
+				System.out.println("La voiture " + i + " se trouve en position : " + listAsString(solution.initialSituation.getCarPositions(i)));
+		System.out.println();
+
+		for(int i = solution.initialSituation.getFirstCar(); i < carCount; ++i) {
+			if(i == goal)
+				System.out.println("Déplacements effectués par la voiture Goal :");
+			else
+				System.out.println("Déplacements effectués par la voiture " + i + " :");
+			final List<Point> carPositions = solution.initialSituation.getCarPositions(i);
+			System.out.println("1. " + listAsString(carPositions) + " Départ");
+			if(solution.moves.containsKey(i)) {
+				int j = 1;
+				for(Situation.Movement movement : solution.moves.get(i)) {
+					for(Point position : carPositions)
+						position.translate(movement.getComposition().x, movement.getComposition().y);
+					System.out.println((++j) + ". " + listAsString(carPositions) + " " + movementToCardinal(movement));
+				}
+			}
+			System.out.println();
+			System.out.println("Une façon de sortir du parking en " + solution.length + " mouvements a été trouvée.");
+		}
+	}
+
+	private static String movementToCardinal(Situation.Movement movement) {
+		switch(movement) {
+			case Up:
+				return "nord";
+			case Down:
+				return "sud";
+			case Left:
+				return "ouest";
+			case Right:
+				return "est";
+			default:
+				return "";
+		}
 	}
 
 	private static List<Point> parseListPoint(String listAsString) throws ParseException {
