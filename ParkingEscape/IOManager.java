@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.text.ParseException;
 
 public class IOManager {
+	private static String goalString = "G";
+	private static String otherCarStringPrefix = "c";
 	public static Situation createSituation(String path) throws ParseException, FileNotFoundException, IOException {
 		List<String> content;
 		Situation ret;
@@ -62,11 +64,13 @@ public class IOManager {
 
 	public static void writeSolution(Graph.Solution solution, String outputFile1, String outputFile2) throws IOException {
 		writeSolutionOut1(solution, outputFile1);
+		writeSolutionOut2(solution, outputFile2);
 	}
 
 	private static void writeSolutionOut1(Graph.Solution solution, String outputFile1) throws IOException {
 		ArrayList<String> lines = new ArrayList<>();
-		lines.add("Situation finale: " + System.lineSeparator() + solution.finalSituation);
+		lines.add("Situation finale: ");
+		lines.add(formatSituation(solution.finalSituation));
 		lines.add("Une façon de sortir du parking en " + solution.length + " mouvements a été trouvée.");
 		lines.add("");
 		for(Map.Entry<Integer, ArrayList<Situation.Movement>> moves : solution.moves.entrySet()) {
@@ -87,6 +91,14 @@ public class IOManager {
 		Files.write(Paths.get(outputFile1), lines, Charset.defaultCharset());
 	}
 
+	private static void writeSolutionOut2(Graph.Solution solution, String outputFile2) throws IOException {
+		ArrayList<String> lines = new ArrayList<>();
+		lines.add("Situation de départ :");
+		lines.add(formatSituation(solution.initialSituation));
+		lines.add("");
+		Files.write(Paths.get(outputFile2), lines, Charset.defaultCharset());
+	}
+
 	private static List<Point> parseListPoint(String listAsString) throws ParseException {
 		List<Point> ret = new ArrayList<>();
 		//Get only the bracket-list after the semicolon
@@ -99,6 +111,12 @@ public class IOManager {
 		for(int i = 1; i < matches.groupCount() + 1; i += 2)
 			ret.add(new Point(Integer.parseInt(matches.group(i + 1)), Integer.parseInt(matches.group(i))));
 		return ret;
+	}
+
+	private static String formatSituation(Situation situation) {
+		String res = situation.toString();
+		res = res.replace(Integer.toString(Situation.getGoalCar()), goalString);
+		return res;
 	}
 
 	private static String listAsString(List<Point> points) {
