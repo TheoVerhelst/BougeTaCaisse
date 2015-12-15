@@ -73,7 +73,10 @@ public class IOManager {
 		lines.add("Une façon de sortir du parking en " + solution.length + " mouvements a été trouvée.");
 		lines.add("");
 		for(Map.Entry<Integer, ArrayList<Situation.Movement>> moves : solution.moves.entrySet()) {
-			lines.add("Déplacements car" + moves.getKey() + ":");
+			if(moves.getKey() == Situation.getGoalCar())
+				lines.add("Déplacements voiture Goal :");
+			else
+				lines.add("Déplacements car" + moves.getKey() + " :");
 			final List<Point> carPositions = solution.initialSituation.getCarPositions(moves.getKey());
 			String line = listAsString(carPositions) + " -> ";
 			for(int i = 0; i < moves.getValue().size(); ++i) {
@@ -104,7 +107,7 @@ public class IOManager {
 		final int carCount = solution.initialSituation.getCarCount();
 
 		System.out.println("Le parking a une dimension de " + size.x + " fois " + size.y);
-		System.out.println("Il contient 1 Goal car et " + (carCount - 1) + " autres voitures.");
+		System.out.println("Il contient 1 Goal car et " + (carCount - 1) + " autres voitures");
 		System.out.println("La voiture Goal se trouve en position : " + listAsString(solution.initialSituation.getCarPositions(goal)));
 		for(int i = solution.initialSituation.getFirstCar(); i < carCount; ++i)
 			if(i != goal)
@@ -167,7 +170,7 @@ public class IOManager {
 	private static String listAsString(List<Point> points) {
 		String ret = "[";
 		for(int i = 0; i < points.size(); ++i) {
-			ret += "(" + points.get(i).x + ", " + points.get(i).y + ")";
+			ret += "(" + points.get(i).y + ", " + points.get(i).x + ")";
 			if(i < points.size() - 1)
 				ret += ", ";
 		}
