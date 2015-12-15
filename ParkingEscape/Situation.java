@@ -226,7 +226,7 @@ public class Situation implements Cloneable {
 			for(int j = 0; j < size.x; ++j)
 				res += "--+";
 		}
-		return res += System.lineSeparator();
+		return res;
 	}
 	
 	public Orientation getCarOrientation(int car) {

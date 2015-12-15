@@ -60,27 +60,31 @@ public class IOManager {
 		}
 	}
 
-	public static void writeSolution(Graph.Solution solution, String outputFile1, String outputFile2) {
-		writeSolutionConsole(solution);
+	public static void writeSolution(Graph.Solution solution, String outputFile1, String outputFile2) throws IOException {
+		writeSolutionOut1(solution, outputFile1);
 	}
 
-	private static void writeSolutionConsole(Graph.Solution solution) {
-		System.out.println("Situation finale: \n" + solution.finalSituation);
-		System.out.println("Une façon de sortir du parking en " + solution.length + " mouvements a été trouvée.\n");
+	private static void writeSolutionOut1(Graph.Solution solution, String outputFile1) throws IOException {
+		ArrayList<String> lines = new ArrayList<>();
+		lines.add("Situation finale: " + System.lineSeparator() + solution.finalSituation);
+		lines.add("Une façon de sortir du parking en " + solution.length + " mouvements a été trouvée.");
+		lines.add("");
 		for(Map.Entry<Integer, ArrayList<Situation.Movement>> moves : solution.moves.entrySet()) {
-			System.out.println("Déplacements car" + moves.getKey() + ":");
+			lines.add("Déplacements car" + moves.getKey() + ":");
 			final List<Point> carPositions = solution.initialSituation.getCarPositions(moves.getKey());
-			System.out.print(listAsString(carPositions) + " -> ");
+			String line = listAsString(carPositions) + " -> ";
 			for(int i = 0; i < moves.getValue().size(); ++i) {
 				Situation.Movement movement = moves.getValue().get(i);
 				for(Point position : carPositions)
 					position.translate(movement.getComposition().x, movement.getComposition().y);
-				System.out.print(listAsString(carPositions));
+				line += listAsString(carPositions);
 				if(i < moves.getValue().size() - 1)
-					System.out.print(" -> ");
+					line += " -> ";
 			}
-			System.out.println();
+			lines.add(line);
 		}
+		lines.add("");
+		Files.write(Paths.get(outputFile1), lines, Charset.defaultCharset());
 	}
 
 	private static List<Point> parseListPoint(String listAsString) throws ParseException {
