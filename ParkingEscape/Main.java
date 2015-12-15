@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.IOException;
 import java.io.FileNotFoundException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.charset.Charset;
 import java.text.ParseException;
 
 public class Main {
@@ -30,7 +33,7 @@ public class Main {
 		List<String> fileContent;
 		try {
 			String filePath = "Parking.txt";
-			fileContent = IOManager.readFile(filePath);
+			fileContent = Files.readAllLines(Paths.get(filePath), Charset.defaultCharset());
 			System.out.println("Raw file:");
 			for(String line : fileContent)
 				System.out.println(line);

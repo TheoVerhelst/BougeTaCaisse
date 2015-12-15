@@ -1,12 +1,16 @@
 package ParkingEscape;
 
-import java.io.*;
 import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.awt.Point;
+import java.nio.file.Files;
+import java.nio.charset.Charset;
+import java.nio.file.Paths;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.ParseException;
 
 public class IOManager {
@@ -14,7 +18,7 @@ public class IOManager {
 		List<String> content;
 		Situation ret;
 		try {
-			content = readFile(path);
+			content = Files.readAllLines(Paths.get(path), Charset.defaultCharset());
 			String dims[] = content.get(0).split(": ")[1].split(" fois ");
 			final int x = Integer.parseInt(dims[0]);
 			final int y = Integer.parseInt(dims[1]);
@@ -73,21 +77,6 @@ public class IOManager {
 			}
 			System.out.println();
 		}
-	}
-
-	public static List<String> readFile(String path) throws FileNotFoundException, IOException {
-		String line;
-		List<String> content = new ArrayList<>();
-		InputStream iStream = new FileInputStream(path);
-		BufferedReader buff = new BufferedReader(new InputStreamReader(iStream));
-		while((line = buff.readLine()) != null)
-			content.add(line);
-		buff.close();
-		return content;
-	}
-
-	public static void writeFile(String path, List<String> content) throws IOException {
-		// TODO
 	}
 
 	private static List<Point> parseListPoint(String listAsString) throws ParseException {
