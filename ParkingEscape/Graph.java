@@ -21,6 +21,7 @@ public class Graph {
 	private HashMap<Situation, Integer> situations;
 	private ArrayList<ArrayList<Boolean>> adjacencyMatrix;
 	private Situation initialSituation;
+	private final static int goal = Situation.getGoalCar();;
 	private final Situation.Orientation goalOrientation;
 
 	public Graph(Situation initialSituation) {
@@ -32,7 +33,6 @@ public class Graph {
 	}
 
 	public Solution solve() {
-		final int goal = Situation.getGoalCar();
 		final Point goalPos = initialSituation.getCarPositions(goal).get(0);
 		final Point exitPos = Situation.getExit();
 
@@ -49,6 +49,7 @@ public class Graph {
 		ret.moves = new TreeMap<>();
 
 		try {
+			checkInitialSituation();
 			while(queue.size() > 0) {
 				final Situation currentSituation = queue.removeFirst();
 				final int currentSituationIndex = situations.get(currentSituation);
@@ -80,9 +81,26 @@ public class Graph {
 			}
 		} catch (SolutionNotFoundException e) {
 			ret.isValid = false;
-			ret.invalidityExplanation = e.toString();
+			ret.invalidityExplanation = e.toString().substring(e.toString().indexOf(":") + 2);
 		}
 		return ret;
+	}
+
+	private void checkInitialSituation() throws SolutionNotFoundException {
+		final Point goalPos = initialSituation.getCarPositions(goal).get(0);
+		for(int i = initialSituation.getFirstCar(); i < initialSituation.getCarCount(); ++i) {
+			if(i != goal) {
+				final Situation.Orientation carOrientation = initialSituation.getCarOrientation(i);
+				final Point carPosition = initialSituation.getCarPositions(i).get(0);
+				if((goalOrientation == Situation.Orientation.Horizontal
+						&& carOrientation == Situation.Orientation.Horizontal
+						&& goalPos.y == carPosition.y)
+						|| (goalOrientation == Situation.Orientation.Vertical
+						&& carOrientation == Situation.Orientation.Vertical
+						&& goalPos.x == carPosition.x))
+					throw new SolutionNotFoundException("la voiture " + i + " bloque la sortie.");
+			}
+		}
 	}
 	
 	private Map<Integer, List<Situation.Movement>> getUsefulMovementsFor(int car, Situation.Movement movement, Situation situation) throws SolutionNotFoundException {
@@ -103,7 +121,7 @@ public class Graph {
 				movement = theoreticalMoves.get(1);
 			}
 			if(!addEntrance(ret, car, movement)) // stuck
-				throw new SolutionNotFoundException("La voiture " + car + " est bloquée par des voitures qui la bloquent elle-même.");
+				throw new SolutionNotFoundException("la voiture " + car + " est bloquée par des voitures qui la bloquent elle-même.");
 		}
 		return ret;
 	}
@@ -118,7 +136,6 @@ public class Graph {
 	}
 
 	private Map<Integer, List<Situation.Movement>> getUsefulMovements(Situation situation) {
-		final int goal = Situation.getGoalCar();
 		Situation.Movement goalMovement;
 		if(goalOrientation == Situation.Orientation.Horizontal)
 			goalMovement = Situation.getExit().x < situation.getCarPositions(goal).get(0).x ? Situation.Movement.Left : Situation.Movement.Right;
@@ -152,7 +169,6 @@ public class Graph {
 	}
 
 	private static boolean isTargetSituation(Situation situation) {
-		final int goal = Situation.getGoalCar();
 		final Point exitPos = Situation.getExit();
 		for(Point goalPos : situation.getCarPositions(goal)) {
 			if(situation.getCarOrientation(goal) == Situation.Orientation.Horizontal) {

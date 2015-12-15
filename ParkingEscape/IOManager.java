@@ -68,27 +68,31 @@ public class IOManager {
 
 	private static void writeSolutionOut1(Graph.Solution solution, String outputFile1) throws IOException {
 		ArrayList<String> lines = new ArrayList<>();
-		lines.add("Situation finale: ");
-		lines.add(solution.finalSituation.toString());
-		lines.add("Une façon de sortir du parking en " + solution.length + " mouvements a été trouvée.");
-		lines.add("");
-		for(Map.Entry<Integer, ArrayList<Situation.Movement>> moves : solution.moves.entrySet()) {
-			if(moves.getKey() == Situation.getGoalCar())
-				lines.add("Déplacements voiture Goal :");
-			else
-				lines.add("Déplacements car" + moves.getKey() + " :");
-			final List<Point> carPositions = solution.initialSituation.getCarPositions(moves.getKey());
-			String line = listAsString(carPositions) + " -> ";
-			for(int i = 0; i < moves.getValue().size(); ++i) {
-				Situation.Movement movement = moves.getValue().get(i);
-				for(Point position : carPositions)
-					position.translate(movement.getComposition().x, movement.getComposition().y);
-				line += listAsString(carPositions);
-				if(i < moves.getValue().size() - 1)
-					line += " -> ";
+		if(solution.isValid) {
+			lines.add("Situation finale: ");
+			lines.add(solution.finalSituation.toString());
+			lines.add("Une façon de sortir du parking en " + solution.length + " mouvements a été trouvée.");
+			lines.add("");
+			for(Map.Entry<Integer, ArrayList<Situation.Movement>> moves : solution.moves.entrySet()) {
+				if(moves.getKey() == Situation.getGoalCar())
+					lines.add("Déplacements voiture Goal :");
+				else
+					lines.add("Déplacements car" + moves.getKey() + " :");
+				final List<Point> carPositions = solution.initialSituation.getCarPositions(moves.getKey());
+				String line = listAsString(carPositions) + " -> ";
+				for(int i = 0; i < moves.getValue().size(); ++i) {
+					Situation.Movement movement = moves.getValue().get(i);
+					for(Point position : carPositions)
+						position.translate(movement.getComposition().x, movement.getComposition().y);
+					line += listAsString(carPositions);
+					if(i < moves.getValue().size() - 1)
+						line += " -> ";
+				}
+				lines.add(line);
 			}
-			lines.add(line);
 		}
+		else
+			lines.add("Il n'y a pas moyen de sortir du parking car " + solution.invalidityExplanation);
 		lines.add("");
 		Files.write(Paths.get(outputFile1), lines, Charset.defaultCharset());
 	}
@@ -114,28 +118,32 @@ public class IOManager {
 				System.out.println("La voiture " + i + " se trouve en position : " + listAsString(solution.initialSituation.getCarPositions(i)));
 		System.out.println();
 
-		for(int i = solution.initialSituation.getFirstCar(); i < carCount; ++i) {
-			if(i == goal)
-				System.out.println("Déplacements effectués par la voiture Goal :");
-			else
-				System.out.println("Déplacements effectués par la voiture " + i + " :");
-			final List<Point> carPositions = solution.initialSituation.getCarPositions(i);
-			System.out.println("1. " + listAsString(carPositions) + " Départ");
-			if(solution.moves.containsKey(i)) {
-				int j = 1;
-				for(Situation.Movement movement : solution.moves.get(i)) {
-					boolean foundExit = false;
-					for(Point position : carPositions) {
-						position.translate(movement.getComposition().x, movement.getComposition().y);
-						if(i == goal && Math.abs(position.x - Situation.getExit().x) == 0  && Math.abs(position.y - Situation.getExit().y) == 0)
-							foundExit = true;
+		if(solution.isValid) {
+			for(int i = solution.initialSituation.getFirstCar(); i < carCount; ++i) {
+				if(i == goal)
+					System.out.println("Déplacements effectués par la voiture Goal :");
+				else
+					System.out.println("Déplacements effectués par la voiture " + i + " :");
+				final List<Point> carPositions = solution.initialSituation.getCarPositions(i);
+				System.out.println("1. " + listAsString(carPositions) + " Départ");
+				if(solution.moves.containsKey(i)) {
+					int j = 1;
+					for(Situation.Movement movement : solution.moves.get(i)) {
+						boolean foundExit = false;
+						for(Point position : carPositions) {
+							position.translate(movement.getComposition().x, movement.getComposition().y);
+							if(i == goal && Math.abs(position.x - Situation.getExit().x) == 0  && Math.abs(position.y - Situation.getExit().y) == 0)
+								foundExit = true;
+						}
+						System.out.println((++j) + ". " + listAsString(carPositions) + " " + (foundExit ? "Sortie!" : movementToCardinal(movement)));
 					}
-					System.out.println((++j) + ". " + listAsString(carPositions) + " " + (foundExit ? "Sortie!" : movementToCardinal(movement)));
 				}
+				System.out.println();
 			}
-			System.out.println();
+			System.out.println("Une façon de sortir du parking en " + solution.length + " mouvements a été trouvée.");
 		}
-		System.out.println("Une façon de sortir du parking en " + solution.length + " mouvements a été trouvée.");
+		else
+			System.out.println("Il n'y a pas moyen de sortir du parking car " + solution.invalidityExplanation);
 	}
 
 	private static String movementToCardinal(Situation.Movement movement) {
