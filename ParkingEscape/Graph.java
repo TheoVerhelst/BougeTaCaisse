@@ -14,6 +14,8 @@ public class Graph {
 		public Situation initialSituation, finalSituation;
 		public Map<Integer, ArrayList<Situation.Movement>> moves;
 		public int length;
+		public boolean isValid;
+		public String invalidityExplanation;
 	}
 
 	private HashMap<Situation, Integer> situations;
@@ -29,7 +31,7 @@ public class Graph {
 		this.goalOrientation = initialSituation.getCarOrientation(Situation.getGoalCar());
 	}
 
-	public Solution solve() throws SolutionNotFoundException {
+	public Solution solve() {
 		final int goal = Situation.getGoalCar();
 		final Point goalPos = initialSituation.getCarPositions(goal).get(0);
 		final Point exitPos = Situation.getExit();
@@ -42,41 +44,48 @@ public class Graph {
 		ArrayList<Integer> carsMoved = new ArrayList<>();
 
 		queue.addLast(initialSituation);
+		ret.isValid = true;
 		ret.initialSituation = initialSituation;
 		ret.moves = new TreeMap<>();
-		while(queue.size() > 0) {
-			final Situation currentSituation = queue.removeFirst();
-			final int currentSituationIndex = situations.get(currentSituation);
-			//For each useful movement in the current situation
-			for(Map.Entry<Integer, List<Situation.Movement>> movementsList : getUsefulMovements(currentSituation).entrySet()) {
-				final int car = movementsList.getKey();
-				for(Situation.Movement movement : movementsList.getValue()) {
-					//Copy the current situation and apply the movement
-					Situation resultingSituation = new Situation(currentSituation);
-					resultingSituation.moveCar(car, movement);
-					if(!situations.containsKey(resultingSituation))
-						queue.addLast(resultingSituation);
-					final int resultingSituationIndex = addSituation(resultingSituation);
-					while(previous.size() <= resultingSituationIndex) {
-						previous.add(null);
-						carsMovements.add(null);
-						carsMoved.add(null);
-					}
-					previous.set(resultingSituationIndex, currentSituationIndex);
-					carsMovements.set(resultingSituationIndex, movement);
-					carsMoved.set(resultingSituationIndex, car);
-					if(isTargetSituation(resultingSituation)) {
-						ret.finalSituation = resultingSituation;
-						fillSolution(ret, previous, carsMovements, carsMoved);
-						return ret;
+
+		try {
+			while(queue.size() > 0) {
+				final Situation currentSituation = queue.removeFirst();
+				final int currentSituationIndex = situations.get(currentSituation);
+				//For each useful movement in the current situation
+				for(Map.Entry<Integer, List<Situation.Movement>> movementsList : getUsefulMovements(currentSituation).entrySet()) {
+					final int car = movementsList.getKey();
+					for(Situation.Movement movement : movementsList.getValue()) {
+						//Copy the current situation and apply the movement
+						Situation resultingSituation = new Situation(currentSituation);
+						resultingSituation.moveCar(car, movement);
+						if(!situations.containsKey(resultingSituation))
+							queue.addLast(resultingSituation);
+						final int resultingSituationIndex = addSituation(resultingSituation);
+						while(previous.size() <= resultingSituationIndex) {
+							previous.add(null);
+							carsMovements.add(null);
+							carsMoved.add(null);
+						}
+						previous.set(resultingSituationIndex, currentSituationIndex);
+						carsMovements.set(resultingSituationIndex, movement);
+						carsMoved.set(resultingSituationIndex, car);
+						if(isTargetSituation(resultingSituation)) {
+							ret.finalSituation = resultingSituation;
+							fillSolution(ret, previous, carsMovements, carsMoved);
+							return ret;
+						}
 					}
 				}
 			}
+		} catch (SolutionNotFoundException e) {
+			ret.isValid = false;
+			ret.invalidityExplanation = e.toString();
 		}
 		return ret;
 	}
 	
-	private Map<Integer, List<Situation.Movement>> getUsefulMovementsFor(int car, Situation.Movement movement, Situation situation) {
+	private Map<Integer, List<Situation.Movement>> getUsefulMovementsFor(int car, Situation.Movement movement, Situation situation) throws SolutionNotFoundException {
 		Map<Integer, List<Situation.Movement>> ret = new TreeMap<>();
 		ArrayDeque<Integer> cars = new ArrayDeque<>();
 		ArrayDeque<Situation.Movement> movements = new ArrayDeque<>();
@@ -94,7 +103,7 @@ public class Graph {
 				movement = theoreticalMoves.get(1);
 			}
 			if(!addEntrance(ret, car, movement)) // stuck
-				return new TreeMap<>();
+				throw new SolutionNotFoundException("La voiture " + car + " est bloquée par des voitures qui la bloquent elle-même.");
 		}
 		return ret;
 	}
