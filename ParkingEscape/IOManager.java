@@ -121,9 +121,13 @@ public class IOManager {
 			if(solution.moves.containsKey(i)) {
 				int j = 1;
 				for(Situation.Movement movement : solution.moves.get(i)) {
-					for(Point position : carPositions)
+					boolean foundExit = false;
+					for(Point position : carPositions) {
 						position.translate(movement.getComposition().x, movement.getComposition().y);
-					System.out.println((++j) + ". " + listAsString(carPositions) + " " + movementToCardinal(movement));
+						if(i == goal && Math.abs(position.x - Situation.getExit().x) == 0  && Math.abs(position.y - Situation.getExit().y) == 0)
+							foundExit = true;
+					}
+					System.out.println((++j) + ". " + listAsString(carPositions) + " " + (foundExit ? "Sortie!" : movementToCardinal(movement)));
 				}
 			}
 			System.out.println();
