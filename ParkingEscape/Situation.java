@@ -32,6 +32,8 @@ public class Situation implements Cloneable {
 	private static final int emptyCell = -1;
 	private static final int goalCell = 0;
 	private static Point exit;
+	private static String goalString = "G";
+	private static String otherCarStringPrefix = "c";
 
 	public Situation(Point size) {
 		this.size = size;
@@ -220,8 +222,17 @@ public class Situation implements Cloneable {
 			res += "---+";
 		for(int i = 0; i < size.y; ++i) {
 			res += System.lineSeparator() + "|";
-			for(int j = 0; j < size.x; ++j)
-				res += (isCellEmpty(j, i) ? "   " : String.format("%3d", getCar(j, i))) + "|";
+			for(int j = 0; j < size.x; ++j) {
+				final int car = getCar(j, i);
+				String cell;
+				if(car == getEmptyCell())
+					cell = "   ";
+				else if(car == getGoalCar())
+					cell = String.format("%-3s", goalString);
+				else
+					cell = String.format("c%-2d", car);
+				res += cell + "|";
+			}
 			res += System.lineSeparator() + "+";
 			for(int j = 0; j < size.x; ++j)
 				res += "---+";
