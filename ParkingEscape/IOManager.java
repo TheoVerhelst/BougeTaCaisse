@@ -127,8 +127,8 @@ public class IOManager {
 				}
 			}
 			System.out.println();
-			System.out.println("Une façon de sortir du parking en " + solution.length + " mouvements a été trouvée.");
 		}
+		System.out.println("Une façon de sortir du parking en " + solution.length + " mouvements a été trouvée.");
 	}
 
 	private static String movementToCardinal(Situation.Movement movement) {

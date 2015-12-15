@@ -231,7 +231,9 @@ public class Situation implements Cloneable {
 					cell = String.format("%-3s", goalString);
 				else
 					cell = String.format("c%-2d", car);
-				res += cell + "|";
+				res += cell;
+				if(Math.abs(j - exit.x) > 0 || Math.abs(i - exit.y) > 0)
+					res += "|";
 			}
 			res += System.lineSeparator() + "+";
 			for(int j = 0; j < size.x; ++j)
