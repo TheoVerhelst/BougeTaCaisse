@@ -83,11 +83,22 @@
         que lorsque c'est nécessaire, donc de ne pas prendre en compte les nœuds ne nous intéressant pas dans la résolution. À savoir : il est
         inutile (\textit{a priori}) de déplacer une voiture placée dans un coin si elle ne gène aucune autre voiture dans l'immédiat.
 
-        La structure de données que nous manipulons dans ce programme est donc un arbre qui est parcouru par niveaux (parcours en largeur d'un graphe)
+        La structure de données que nous manipulons dans ce programme est un arbre qui est parcouru par niveaux (parcours en largeur d'un graphe)
         comme expliqué dans la section suivante.
 
 \section{Algorithme}
+		On définit, à partir d'une situation donnée, un ensemble de mouvements \textit{intéressants} qui mènent
+		à une solution rapidement, c'est-à-dire en un nombre de mouvement plus petit que en testant l'ensemble des mouvements valides à
+		partir de cette situation. Cela implique que le graphe des situations est dirigé, car si un mouvement donné est intéressant,
+		le mouvement inverse ne l'est pas forcément. \\
+		Le graphe généré lors de la résolution est défini comme suit :
+		\begin{itemize}
+			\item La racine du graphe est la situation initiale;
+			\item Les fils d'un noeud donné sont tous les noeuds qui diffèrent du père par un unique mouvement intéressant
+		\end{itemize}
     \subsection{Choix de l'algorithme}
+		L'algorithme parcourt le graphe qui part de la situation initiale, et où chaque fils d'un noeud est une situation différent
+		de père n'en différent que par un mouvement intéressant.
     \subsection{Explications}
 
 \end{document}
