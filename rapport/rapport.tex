@@ -77,6 +77,7 @@
 		solution valide. Chaque situation valide est enregistrée et liée à toute celles qui ne diffèrent d'elle que par un mouvement.
 		Un graphe des situations se construit alors au fur et à mesure de la recherche de la solution.\\
 		Une situation est valide si toutes les voitures sont à l'intérieur du parking, et si aucune voiture n'en chevauche une autre.
+		Une solution est une situation où la voiture Goal se trouve à une case de la sortie du parking.
 
     \subsection{Manipulation d'un \textit{arbre} lors de la génération des solutions}
         Suite à une discussion avec M. Fortz, titulaire du cours INFOF-203, à propos du projet, il nous a été conseillé de ne générer le graphe
@@ -94,11 +95,24 @@
 		Le graphe généré lors de la résolution est défini comme suit :
 		\begin{itemize}
 			\item La racine du graphe est la situation initiale;
-			\item Les fils d'un noeud donné sont tous les noeuds qui diffèrent du père par un unique mouvement intéressant
+			\item Les fils d'un noeud donné sont tous les noeuds qui ne diffèrent du père que par un unique mouvement intéressant;
 		\end{itemize}
     \subsection{Choix de l'algorithme}
-		L'algorithme parcourt le graphe qui part de la situation initiale, et où chaque fils d'un noeud est une situation différent
-		de père n'en différent que par un mouvement intéressant.
-    \subsection{Explications}
+		Le choix de mouvement intéressants est une méthode heuristique, dans le sens que ces choix ne mèneront pas de manière certaine
+		à une solution optimale (avec un nombre de mouvement minimal), mais la recherche de cette solution est bien plus rapide.
+		Pour donner un ordre d'idée, le parcourt exhaustif des situations possibles trouve une solution optimale en à peu près 4000 essais,
+		et notre implémentation heuristique trouve une solution en à peu près 100 essais. Un essai corresponds à une situation construite,
+		et la situation testée est celle décrite dans l'énoncé.
 
+		L'algorithme parcourt le graphe défini ci-dessus par niveaux, jusqu'à trouver une situation qui est une solution.
+		Le parcourt par niveau revient à construire l'arbre sous-tendant minimal partant de la situation initiale,
+		permettant de trouver le plus court chemin menant à une solution.
+
+    \subsection{Explications}
+		Pour éviter de générer tout le graphe, les situations sont construites et intégrées au graphe pendant l'exécution du parcours. \\
+		Ceci est réalisé au moyen d'une méthode qui donne, pour une situation donnée, les mouvement intéressants.
+		L'algorithme part de la situation de départ, et génère une situation pour chacuns des mouvements intéressants, 
+		et pour chacun des fils ainsi générés, génère aussi une situation pour chacun des mouvements intéressants partants de ce fils.
+
+		Cet algorithme est conceptuellement récursif, mais pour des raisons de performances il est implémenté de manière itérative.
 \end{document}
