@@ -27,7 +27,7 @@
     \subsection{Résumé de l'énoncé}
         En bref, résumons la consigne de l'énoncé.
 
-        Soit un parking $P$ admettant une et une seule sortie, et représenté par un quadrillage de dimension finie $L\times H$. Soient $(n+1)$ voitures $\{v_G, v_1, v_2, \ldots, v_n\}$. Toutes ces voitures ocuppent un nombre de cases strictement supérieur à 1, et ont une
+        Soit un parking $P$ admettant une et une seule sortie, et représenté par un quadrillage de dimension finie $L\times H$. Soient $(n+1)$ voitures $\{v_G, v_1, v_2, \ldots, v_n\}$. Toutes ces voitures occupent un nombre de cases strictement supérieur à 1, et ont une
         orientation qui leur est associée (soit horizontale, soit verticale). L'objectif est d'amener la voiture $v_G$ (appelée voiture \textit{Goal})
         jusqu'à la sortie du parking en respectant les déplacements relatifs à l'orientation de chaque voiture, à savoir : une voiture verticale ne peut
         se déplacer que vers le haut ou vers le bas et une voiture horizontale ne peut se déplacer que vers la gauche ou vers la droite.
@@ -89,30 +89,32 @@
 
 \section{Algorithme}
 		On définit, à partir d'une situation donnée, un ensemble de mouvements \textit{intéressants} qui mènent
-		à une solution rapidement, c'est-à-dire en un nombre de mouvement plus petit que en testant l'ensemble des mouvements valides à
+		à une solution rapidement, c'est-à-dire en un nombre de mouvement plus petit qu'en testant l'ensemble des mouvements valides à
 		partir de cette situation. Cela implique que le graphe des situations est dirigé, car si un mouvement donné est intéressant,
 		le mouvement inverse ne l'est pas forcément. \\
 		Le graphe généré lors de la résolution est défini comme suit :
-		\begin{itemize}
-			\item La racine du graphe est la situation initiale;
-			\item Les fils d'un noeud donné sont tous les noeuds qui ne diffèrent du père que par un unique mouvement intéressant;
+
+        \begin{itemize}
+			\item la racine du graphe est la situation initiale ;
+			\item les fils d'un nœud donné sont tous les nœuds qui ne diffèrent du père que par un unique mouvement intéressant.
 		\end{itemize}
+
     \subsection{Choix de l'algorithme}
-		Le choix de mouvement intéressants est une méthode heuristique, dans le sens que ces choix ne mèneront pas de manière certaine
+		Le choix des mouvements intéressants est une méthode heuristique, dans le sens que ces choix ne mèneront pas de manière certaine
 		à une solution optimale (avec un nombre de mouvement minimal), mais la recherche de cette solution est bien plus rapide.
 		Pour donner un ordre d'idée, le parcourt exhaustif des situations possibles trouve une solution optimale en à peu près 4000 essais,
 		et notre implémentation heuristique trouve une solution en à peu près 100 essais. Un essai corresponds à une situation construite,
 		et la situation testée est celle décrite dans l'énoncé.
 
 		L'algorithme parcourt le graphe défini ci-dessus par niveaux, jusqu'à trouver une situation qui est une solution.
-		Le parcourt par niveau revient à construire l'arbre sous-tendant minimal partant de la situation initiale,
+		Le parcours par niveau revient à construire l'arbre sous-tendant minimal partant de la situation initiale,
 		permettant de trouver le plus court chemin menant à une solution.
 
     \subsection{Explications}
 		Pour éviter de générer tout le graphe, les situations sont construites et intégrées au graphe pendant l'exécution du parcours. \\
 		Ceci est réalisé au moyen d'une méthode qui donne, pour une situation donnée, les mouvement intéressants.
-		L'algorithme part de la situation de départ, et génère une situation pour chacuns des mouvements intéressants, 
-		et pour chacun des fils ainsi générés, génère aussi une situation pour chacun des mouvements intéressants partants de ce fils.
+		L'algorithme part de la situation de départ, et génère une situation pour chacun des mouvements intéressants.
+		Pour chacun des fils ainsi générés, il génère ensuite une situation pour chacun des mouvements intéressants partants de ce fils, etc.
 
 		Cet algorithme est conceptuellement récursif, mais pour des raisons de performances il est implémenté de manière itérative.
 \end{document}
