@@ -61,7 +61,24 @@
 
         C'est la classe la plus importante du point de vue des proportions car c'est celle qui contient la codification utilisée par les autres.
 
+    \subsection{Séparation des I/O dans une classe \texttt{IOManager}}
+        La classe \texttt{IOManager} est une classe contenant exclusivement des méthodes statiques. En effet, le seul but de cette classe
+        est de servir d'interface entre le programme chargé de résoudre le problème donné et les fichiers chargés de définir la situation
+        initiale ou de décrire la situation finale. C'est donc au sein de cette classe que le parsing du fichier d'input est fait dans le but
+        de créer la situation de départ décrite dans le fichier d'input. C'est également dans cette classe que sont réalisés les formatages
+        pour l'écriture lors de l'achèvement du programme.
+
+    \subsection{Classe de résolution algorithmique}
+        La dernière classe, à savoir \texttt{Graph} contient la structure algorithmique relative au parcours du graphe afin de déterminer la situation
+        sur base d'un algorithme décrit dans la section suivante.
+
     \subsection{Manipulation d'un \textit{arbre} lors de la génération des solutions}
+        Suite à une discussion avec M. Fortz, titulaire du cours INFOF-203, à propos du projet, il nous a été conseillé de ne générer le graphe
+        que lorsque c'est nécessaire, donc de ne pas prendre en compte les nœuds ne nous intéressant pas dans la résolution. À savoir : il est
+        inutile (\textit{a priori}) de déplacer une voiture placée dans un coin si elle ne gène aucune autre voiture dans l'immédiat.
+
+        La structure de données que nous manipulons donc dans ce programme est donc un arbre qui est parcouru par niveaux (parcours en largeur d'un graphe)
+        comme expliqué dans la section suivante.
 
 \section{Algorithme}
     \subsection{Choix de l'algorithme}
