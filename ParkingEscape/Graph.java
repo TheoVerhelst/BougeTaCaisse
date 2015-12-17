@@ -19,14 +19,12 @@ public class Graph {
 	}
 
 	private HashMap<Situation, Integer> situations;
-	private ArrayList<ArrayList<Boolean>> adjacencyMatrix;
 	private Situation initialSituation;
 	private final static int goal = Situation.getGoalCar();;
 	private final Situation.Orientation goalOrientation;
 
 	public Graph(Situation initialSituation) {
 		this.situations = new HashMap<Situation, Integer>();
-		this.adjacencyMatrix = new ArrayList<ArrayList<Boolean>>();
 		this.addSituation(initialSituation);
 		this.initialSituation = initialSituation;
 		this.goalOrientation = initialSituation.getCarOrientation(Situation.getGoalCar());
@@ -166,8 +164,6 @@ public class Graph {
 			return situations.get(situation);
 		final int index = situations.size();
 		situations.put(situation, index);
-		final int matrixIndex = addMatrixEntry();
-		assert matrixIndex == index : "adjacencyMatrix and situations have different sizes.";
 		return index;
 	}
 
@@ -187,24 +183,6 @@ public class Graph {
 			}
 		}
 		return false;
-	}
-
-	private int addMatrixEntry() {
-		final int index = adjacencyMatrix.size();
-		for(int i = 0; i < index; ++i)
-			adjacencyMatrix.get(i).add(false);
-		ArrayList<Boolean> newRow = new ArrayList<Boolean>();
-		newRow.ensureCapacity(index + 1);
-		for(int i = 0; i < index; ++i)
-			newRow.add(false);
-		newRow.add(true);
-		adjacencyMatrix.add(newRow);
-		return index;
-	}
-
-	private void linkSituations(int i, int j) {
-		assert i < adjacencyMatrix.size() && j < adjacencyMatrix.size();
-		adjacencyMatrix.get(i).set(j, true);
 	}
 }
 
