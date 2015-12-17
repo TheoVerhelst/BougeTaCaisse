@@ -118,9 +118,9 @@ public class Situation implements Cloneable {
 			return getEmptyCell();
 	}
 
-	public List<Movement> getPossibleMovements(int car) throws IndexOutOfBoundsException {
+	public ArrayList<Movement> getPossibleMovements(int car) throws IndexOutOfBoundsException {
 		checkCarArgument(car);
-		List<Movement> result = new ArrayList<>();
+		ArrayList<Movement> result = new ArrayList<>();
 		final List<Point> pos = getCarPositions(car);
 		Point previousCell = new Point(pos.get(0)),
 		      nextCell = new Point(pos.get(pos.size()-1));
@@ -247,8 +247,8 @@ public class Situation implements Cloneable {
 		return this.carsOrientations.get(car);
 	}
 
-	public static List<Situation.Movement> getMovementsFromOrientation(Orientation orientation) {
-		List<Situation.Movement> ret = new ArrayList<>();
+	public static ArrayList<Situation.Movement> getMovementsFromOrientation(Orientation orientation) {
+		ArrayList<Situation.Movement> ret = new ArrayList<>();
 		if(orientation == Orientation.Horizontal) {
 			ret.add(Movement.Left);
 			ret.add(Movement.Right);

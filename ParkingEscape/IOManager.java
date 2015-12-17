@@ -161,8 +161,8 @@ public class IOManager {
 		}
 	}
 
-	private static List<Point> parseListPoint(String listAsString) throws ParseException {
-		List<Point> ret = new ArrayList<>();
+	private static ArrayList<Point> parseListPoint(String listAsString) throws ParseException {
+		ArrayList<Point> ret = new ArrayList<>();
 		//Get only the bracket-list after the semicolon
 		listAsString = listAsString.split(":")[1].trim();
 		Pattern tuplesPattern = Pattern.compile("\\[\\((\\d+),\\s*(\\d+)\\)\\s*(?:,\\s*\\((\\d+),\\s*(\\d+)\\)\\s*)*\\]");
